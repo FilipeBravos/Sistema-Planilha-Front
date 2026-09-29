@@ -9,8 +9,10 @@ import { RegistroService } from '../registro.service';
 
 interface FormularioRegistro {
   data: string;
-  horaInicial: string;
-  horaFinal: string;
+  horaInicialVagner: string;
+  horaFinalVagner: string;
+  horaInicialFilipe: string;
+  horaFinalFilipe: string;
   kmInicial: number | null;
   kmFinal: number | null;
   cargaPosto: number | null;
@@ -21,8 +23,10 @@ interface FormularioRegistro {
 function formularioVazio(): FormularioRegistro {
   return {
     data: '',
-    horaInicial: '',
-    horaFinal: '',
+    horaInicialVagner: '',
+    horaFinalVagner: '',
+    horaInicialFilipe: '',
+    horaFinalFilipe: '',
     kmInicial: null,
     kmFinal: null,
     cargaPosto: null,
@@ -59,8 +63,12 @@ export class PlanilhaUber implements OnInit {
     return diaDaSemana(this.form.data);
   }
 
-  protected get totalMinutosPrevia(): number {
-    return minutosEntre(this.form.horaInicial, this.form.horaFinal);
+  protected get minutosVagnerPrevia(): number {
+    return minutosEntre(this.form.horaInicialVagner, this.form.horaFinalVagner);
+  }
+
+  protected get minutosFilipePrevia(): number {
+    return minutosEntre(this.form.horaInicialFilipe, this.form.horaFinalFilipe);
   }
 
   protected get totalKmPrevia(): number {
@@ -96,8 +104,10 @@ export class PlanilhaUber implements OnInit {
     this.erro.set('');
     this.form = {
       data: r.data,
-      horaInicial: hhmm(r.horaInicial),
-      horaFinal: hhmm(r.horaFinal),
+      horaInicialVagner: hhmm(r.horaInicialVagner),
+      horaFinalVagner: hhmm(r.horaFinalVagner),
+      horaInicialFilipe: hhmm(r.horaInicialFilipe),
+      horaFinalFilipe: hhmm(r.horaFinalFilipe),
       kmInicial: r.kmInicial,
       kmFinal: r.kmFinal,
       cargaPosto: r.cargaPosto,
@@ -139,12 +149,16 @@ export class PlanilhaUber implements OnInit {
 
   private montarRequisicao(): RegistroRequest | null {
     const f = this.form;
-    if (!f.data || !f.horaInicial || !f.horaFinal || f.kmInicial === null || f.kmFinal === null) {
-      this.erro.set('Preencha data, horas e Km inicial/final.');
+    if (!f.data || f.kmInicial === null || f.kmFinal === null) {
+      this.erro.set('Preencha a data e o Km inicial/final.');
       return null;
     }
     if (f.kmFinal < f.kmInicial) {
       this.erro.set('Km final não pode ser menor que o Km inicial.');
+      return null;
+    }
+    if (!!f.horaInicialVagner !== !!f.horaFinalVagner || !!f.horaInicialFilipe !== !!f.horaFinalFilipe) {
+      this.erro.set('Informe hora inicial e final de cada pessoa (ou deixe as duas em branco).');
       return null;
     }
     const valores = [f.cargaPosto ?? 0, f.valorVagner ?? 0, f.valorFilipe ?? 0];
@@ -155,8 +169,10 @@ export class PlanilhaUber implements OnInit {
     this.erro.set('');
     return {
       data: f.data,
-      horaInicial: f.horaInicial,
-      horaFinal: f.horaFinal,
+      horaInicialVagner: f.horaInicialVagner || null,
+      horaFinalVagner: f.horaFinalVagner || null,
+      horaInicialFilipe: f.horaInicialFilipe || null,
+      horaFinalFilipe: f.horaFinalFilipe || null,
       kmInicial: f.kmInicial,
       kmFinal: f.kmFinal,
       cargaPosto: valores[0],

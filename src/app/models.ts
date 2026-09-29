@@ -1,7 +1,9 @@
 export interface RegistroRequest {
   data: string;
-  horaInicial: string;
-  horaFinal: string;
+  horaInicialVagner: string | null;
+  horaFinalVagner: string | null;
+  horaInicialFilipe: string | null;
+  horaFinalFilipe: string | null;
   kmInicial: number;
   kmFinal: number;
   cargaPosto: number;
@@ -12,6 +14,8 @@ export interface RegistroRequest {
 export interface Registro extends RegistroRequest {
   id: number;
   diaSemana: string;
+  totalMinutosVagner: number;
+  totalMinutosFilipe: number;
   totalMinutos: number;
   totalKm: number;
   liquidoVagner: number;

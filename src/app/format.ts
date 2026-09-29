@@ -6,8 +6,8 @@ export function formatarMinutos(minutos: number): string {
 }
 
 /** "08:00:00" -> "08:00" (valor aceito por <input type="time">) */
-export function hhmm(hora: string): string {
-  return hora.slice(0, 5);
+export function hhmm(hora: string | null): string {
+  return hora ? hora.slice(0, 5) : '';
 }
 
 /** "2026-09-28" -> "28/09/2026" (sem passar por Date, evitando fuso) */

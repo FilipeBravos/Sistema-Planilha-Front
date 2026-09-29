@@ -29,9 +29,12 @@
       <tr>
         <th>Data</th>
         <th>Dia da semana</th>
-        <th>Hora inicial</th>
-        <th>Hora final</th>
-        <th>Total de horas</th>
+        <th>Hora inicial Vagner</th>
+        <th>Hora final Vagner</th>
+        <th>Total horas Vagner</th>
+        <th>Hora inicial Filipe</th>
+        <th>Hora final Filipe</th>
+        <th>Total horas Filipe</th>
         <th>Km inicial</th>
         <th>Km final</th>
         <th>Total de Km</th>
@@ -48,9 +51,12 @@
         <tr [class.editando]="editandoId() === r.id">
           <td>{{ formatarData(r.data) }}</td>
           <td>{{ r.diaSemana }}</td>
-          <td>{{ hhmm(r.horaInicial) }}</td>
-          <td>{{ hhmm(r.horaFinal) }}</td>
-          <td>{{ formatarMinutos(r.totalMinutos) }}</td>
+          <td>{{ hhmm(r.horaInicialVagner) }}</td>
+          <td>{{ hhmm(r.horaFinalVagner) }}</td>
+          <td>{{ formatarMinutos(r.totalMinutosVagner) }}</td>
+          <td>{{ hhmm(r.horaInicialFilipe) }}</td>
+          <td>{{ hhmm(r.horaFinalFilipe) }}</td>
+          <td>{{ formatarMinutos(r.totalMinutosFilipe) }}</td>
           <td class="num">{{ r.kmInicial }}</td>
           <td class="num">{{ r.kmFinal }}</td>
           <td class="num">{{ r.totalKm }}</td>
@@ -65,16 +71,19 @@
           </td>
         </tr>
       } @empty {
-        <tr><td colspan="14" class="vazio">Nenhum lançamento ainda. Use a linha abaixo para adicionar.</td></tr>
+        <tr><td colspan="17" class="vazio">Nenhum lançamento ainda. Use a linha abaixo para adicionar.</td></tr>
       }
     </tbody>
     <tfoot>
       <tr class="entrada">
         <td><input type="date" name="data" [(ngModel)]="form.data" aria-label="Data" /></td>
         <td class="calc">{{ diaSemanaPrevia }}</td>
-        <td><input type="time" name="horaInicial" [(ngModel)]="form.horaInicial" aria-label="Hora inicial" /></td>
-        <td><input type="time" name="horaFinal" [(ngModel)]="form.horaFinal" aria-label="Hora final" /></td>
-        <td class="calc">{{ formatarMinutos(totalMinutosPrevia) }}</td>
+        <td><input type="time" name="horaInicialVagner" [(ngModel)]="form.horaInicialVagner" aria-label="Hora inicial Vagner" /></td>
+        <td><input type="time" name="horaFinalVagner" [(ngModel)]="form.horaFinalVagner" aria-label="Hora final Vagner" /></td>
+        <td class="calc">{{ formatarMinutos(minutosVagnerPrevia) }}</td>
+        <td><input type="time" name="horaInicialFilipe" [(ngModel)]="form.horaInicialFilipe" aria-label="Hora inicial Filipe" /></td>
+        <td><input type="time" name="horaFinalFilipe" [(ngModel)]="form.horaFinalFilipe" aria-label="Hora final Filipe" /></td>
+        <td class="calc">{{ formatarMinutos(minutosFilipePrevia) }}</td>
         <td><input type="number" min="0" name="kmInicial" [(ngModel)]="form.kmInicial" aria-label="Km inicial" /></td>
         <td><input type="number" min="0" name="kmFinal" [(ngModel)]="form.kmFinal" aria-label="Km final" /></td>
         <td class="calc num">{{ totalKmPrevia }}</td>

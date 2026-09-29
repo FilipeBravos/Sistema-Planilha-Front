@@ -12,7 +12,7 @@ npm test
 
 ## Tela
 - Cartões no topo: horas (juntos e individual) e faturamento bruto (juntos e individual).
-- Planilha: Data, Dia da semana, Hora inicial/final, Total de horas, Km inicial/final, Total de Km,
+- Planilha: Data, Dia da semana, Hora inicial/final e Total de horas de cada pessoa (Vagner e Filipe; opcionais), Km inicial/final, Total de Km,
   R$ Carga Posto, Valor Vagner, Valor Filipe, Líquido Vagner, Líquido Filipe.
 - A última linha (verde) é a de entrada: mostra os campos calculados ao vivo; o backend recalcula ao salvar.
   "Editar" carrega a linha nessa entrada; "Excluir" remove o lançamento.
