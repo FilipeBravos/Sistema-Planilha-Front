@@ -1,9 +1,19 @@
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { diaDaSemana, formatarData, formatarMinutos, hhmm, minutosEntre } from '../format';
+import {
+  ModoPeriodo,
+  calcularPeriodo,
+  deIso,
+  deslocar,
+  diaDaSemana,
+  formatarData,
+  formatarMinutos,
+  hhmm,
+  minutosEntre,
+} from '../format';
 import { Registro, RegistroRequest, Resumo } from '../models';
 import { RegistroService } from '../registro.service';
 
@@ -50,6 +60,9 @@ export class PlanilhaUber implements OnInit {
   protected readonly resumo = signal<Resumo | null>(null);
   protected readonly erro = signal('');
   protected readonly editandoId = signal<number | null>(null);
+  protected readonly modo = signal<ModoPeriodo>('mes');
+  private readonly referencia = signal(new Date());
+  protected readonly periodo = computed(() => calcularPeriodo(this.modo(), this.referencia()));
   protected form: FormularioRegistro = formularioVazio();
 
   protected readonly formatarMinutos = formatarMinutos;
@@ -90,6 +103,24 @@ export class PlanilhaUber implements OnInit {
     return (this.form.valorFilipe ?? 0) - (this.form.cargaPostoFilipe ?? 0);
   }
 
+  protected mudarModo(modo: ModoPeriodo): void {
+    this.modo.set(modo);
+    this.cancelar();
+    this.carregar();
+  }
+
+  protected navegar(sentido: 1 | -1): void {
+    this.referencia.set(deslocar(this.modo(), this.referencia(), sentido));
+    this.cancelar();
+    this.carregar();
+  }
+
+  protected hoje(): void {
+    this.referencia.set(new Date());
+    this.cancelar();
+    this.carregar();
+  }
+
   protected salvar(): void {
     const requisicao = this.montarRequisicao();
     if (!requisicao) {
@@ -99,6 +130,7 @@ export class PlanilhaUber implements OnInit {
     const chamada = id === null ? this.service.criar(requisicao) : this.service.atualizar(id, requisicao);
     chamada.subscribe({
       next: () => {
+        this.mostrarPeriodoDe(requisicao.data);
         this.cancelar();
         this.carregar();
       },
@@ -146,13 +178,22 @@ export class PlanilhaUber implements OnInit {
   }
 
   private carregar(): void {
-    forkJoin({ registros: this.service.listar(), resumo: this.service.resumo() }).subscribe({
+    const periodo = this.periodo();
+    forkJoin({ registros: this.service.listar(periodo), resumo: this.service.resumo(periodo) }).subscribe({
       next: ({ registros, resumo }) => {
         this.registros.set(registros);
         this.resumo.set(resumo);
       },
       error: (e: HttpErrorResponse) => this.erro.set(this.mensagemDeErro(e)),
     });
+  }
+
+  /** Se o lançamento salvo cair fora do período exibido, muda para o período dele. */
+  private mostrarPeriodoDe(data: string): void {
+    const { inicio, fim } = this.periodo();
+    if ((inicio && data < inicio) || (fim && data > fim)) {
+      this.referencia.set(deIso(data));
+    }
   }
 
   private montarRequisicao(): RegistroRequest | null {

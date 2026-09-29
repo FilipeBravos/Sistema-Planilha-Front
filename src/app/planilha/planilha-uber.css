@@ -1,3 +1,53 @@
+.filtro {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.modos {
+  display: inline-flex;
+}
+.modos button {
+  width: auto;
+  height: 30px;
+  padding: 0 14px;
+  margin: 0;
+  border-radius: 0;
+}
+.modos button:first-child {
+  border-radius: 6px 0 0 6px;
+}
+.modos button:last-child {
+  border-radius: 0 6px 6px 0;
+}
+.modos button + button {
+  margin-left: -1px;
+}
+.modos button.ativo {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: #fff;
+}
+.navegacao {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.navegacao button {
+  height: 30px;
+}
+.navegacao .hoje {
+  width: auto;
+  padding: 0 12px;
+  margin-left: 6px;
+}
+.rotulo {
+  min-width: 150px;
+  text-align: center;
+  font-weight: 600;
+}
+
 .resumo {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));

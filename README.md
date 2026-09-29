@@ -11,6 +11,7 @@ npm test
 ```
 
 ## Tela
+- Filtro de período (Semana de segunda a domingo / Mês / Tudo) com setas ‹ › e "Hoje"; os cartões e a planilha respeitam o período. Ao salvar um lançamento fora do período exibido, a tela pula para o período dele.
 - Cartões no topo: horas e faturamento bruto/líquido (juntos e individual) e carga do posto discriminada por pessoa (sem somar).
 - Planilha: Data, Dia da semana, Hora inicial/final e Total de horas de cada pessoa (Vagner e Filipe; opcionais), Km inicial/final, Total de Km,
   R$ Carga Posto Vagner, R$ Carga Posto Filipe, Valor Vagner, Valor Filipe, Líquido Vagner, Líquido Filipe.
