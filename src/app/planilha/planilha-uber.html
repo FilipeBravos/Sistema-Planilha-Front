@@ -69,15 +69,17 @@
         <th rowspan="2">Km inicial</th>
         <th rowspan="2">Km final</th>
         <th rowspan="2">Total de Km</th>
-        <th colspan="3" class="grupo">Vagner (R$)</th>
-        <th colspan="3" class="grupo">Filipe (R$)</th>
+        <th rowspan="2">R$ Carga Posto Vagner</th>
+        <th rowspan="2">R$ Carga Posto Filipe</th>
+        <th rowspan="2">Valor Vagner</th>
+        <th rowspan="2">Valor Filipe</th>
+        <th rowspan="2">Líquido Vagner</th>
+        <th rowspan="2">Líquido Filipe</th>
         <th rowspan="2"></th>
       </tr>
       <tr>
         <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Total</th>
         <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Total</th>
-        <th class="sub">Carga Posto</th><th class="sub">Valor</th><th class="sub">Líquido</th>
-        <th class="sub">Carga Posto</th><th class="sub">Valor</th><th class="sub">Líquido</th>
       </tr>
     </thead>
     <tbody>
@@ -95,10 +97,10 @@
           <td class="num">{{ r.kmFinal }}</td>
           <td class="num">{{ r.totalKm }}</td>
           <td class="num">{{ r.cargaPostoVagner | currency: 'BRL' }}</td>
-          <td class="num">{{ r.valorVagner | currency: 'BRL' }}</td>
-          <td class="num" [class.negativo]="r.liquidoVagner < 0">{{ r.liquidoVagner | currency: 'BRL' }}</td>
           <td class="num">{{ r.cargaPostoFilipe | currency: 'BRL' }}</td>
+          <td class="num">{{ r.valorVagner | currency: 'BRL' }}</td>
           <td class="num">{{ r.valorFilipe | currency: 'BRL' }}</td>
+          <td class="num" [class.negativo]="r.liquidoVagner < 0">{{ r.liquidoVagner | currency: 'BRL' }}</td>
           <td class="num" [class.negativo]="r.liquidoFilipe < 0">{{ r.liquidoFilipe | currency: 'BRL' }}</td>
           <td class="acoes">
             <button type="button" title="Editar" aria-label="Editar" (click)="editar(r)">✎</button>
@@ -123,10 +125,10 @@
         <td><input type="number" min="0" name="kmFinal" [(ngModel)]="form.kmFinal" aria-label="Km final" /></td>
         <td class="calc num">{{ totalKmPrevia }}</td>
         <td><input type="number" min="0" step="0.01" name="cargaPostoVagner" [(ngModel)]="form.cargaPostoVagner" aria-label="Carga posto Vagner" /></td>
-        <td><input type="number" min="0" step="0.01" name="valorVagner" [(ngModel)]="form.valorVagner" aria-label="Valor Vagner" /></td>
-        <td class="calc num">{{ liquidoVagnerPrevia | currency: 'BRL' }}</td>
         <td><input type="number" min="0" step="0.01" name="cargaPostoFilipe" [(ngModel)]="form.cargaPostoFilipe" aria-label="Carga posto Filipe" /></td>
+        <td><input type="number" min="0" step="0.01" name="valorVagner" [(ngModel)]="form.valorVagner" aria-label="Valor Vagner" /></td>
         <td><input type="number" min="0" step="0.01" name="valorFilipe" [(ngModel)]="form.valorFilipe" aria-label="Valor Filipe" /></td>
+        <td class="calc num">{{ liquidoVagnerPrevia | currency: 'BRL' }}</td>
         <td class="calc num">{{ liquidoFilipePrevia | currency: 'BRL' }}</td>
         <td class="acoes">
           <button type="button" class="primario" [title]="editandoId() === null ? 'Adicionar' : 'Salvar'" [attr.aria-label]="editandoId() === null ? 'Adicionar' : 'Salvar'" (click)="salvar()">{{ editandoId() === null ? '+' : '✓' }}</button>
