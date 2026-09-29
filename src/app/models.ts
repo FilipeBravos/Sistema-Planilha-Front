@@ -6,7 +6,8 @@ export interface RegistroRequest {
   horaFinalFilipe: string | null;
   kmInicial: number;
   kmFinal: number;
-  cargaPosto: number;
+  cargaPostoVagner: number;
+  cargaPostoFilipe: number;
   valorVagner: number;
   valorFilipe: number;
 }

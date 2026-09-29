@@ -15,7 +15,8 @@ interface FormularioRegistro {
   horaFinalFilipe: string;
   kmInicial: number | null;
   kmFinal: number | null;
-  cargaPosto: number | null;
+  cargaPostoVagner: number | null;
+  cargaPostoFilipe: number | null;
   valorVagner: number | null;
   valorFilipe: number | null;
 }
@@ -29,7 +30,8 @@ function formularioVazio(): FormularioRegistro {
     horaFinalFilipe: '',
     kmInicial: null,
     kmFinal: null,
-    cargaPosto: null,
+    cargaPostoVagner: null,
+    cargaPostoFilipe: null,
     valorVagner: null,
     valorFilipe: null,
   };
@@ -81,11 +83,11 @@ export class PlanilhaUber implements OnInit {
   }
 
   protected get liquidoVagnerPrevia(): number {
-    return (this.form.valorVagner ?? 0) - (this.form.horaInicialVagner ? (this.form.cargaPosto ?? 0) : 0);
+    return (this.form.valorVagner ?? 0) - (this.form.cargaPostoVagner ?? 0);
   }
 
   protected get liquidoFilipePrevia(): number {
-    return (this.form.valorFilipe ?? 0) - (this.form.horaInicialFilipe ? (this.form.cargaPosto ?? 0) : 0);
+    return (this.form.valorFilipe ?? 0) - (this.form.cargaPostoFilipe ?? 0);
   }
 
   protected salvar(): void {
@@ -115,7 +117,8 @@ export class PlanilhaUber implements OnInit {
       horaFinalFilipe: hhmm(r.horaFinalFilipe),
       kmInicial: r.kmInicial,
       kmFinal: r.kmFinal,
-      cargaPosto: r.cargaPosto,
+      cargaPostoVagner: r.cargaPostoVagner,
+      cargaPostoFilipe: r.cargaPostoFilipe,
       valorVagner: r.valorVagner,
       valorFilipe: r.valorFilipe,
     };
@@ -166,7 +169,7 @@ export class PlanilhaUber implements OnInit {
       this.erro.set('Informe hora inicial e final de cada pessoa (ou deixe as duas em branco).');
       return null;
     }
-    const valores = [f.cargaPosto ?? 0, f.valorVagner ?? 0, f.valorFilipe ?? 0];
+    const valores = [f.cargaPostoVagner ?? 0, f.cargaPostoFilipe ?? 0, f.valorVagner ?? 0, f.valorFilipe ?? 0];
     if (valores.some((v) => v < 0)) {
       this.erro.set('Valores em R$ não podem ser negativos.');
       return null;
@@ -180,9 +183,10 @@ export class PlanilhaUber implements OnInit {
       horaFinalFilipe: f.horaFinalFilipe || null,
       kmInicial: f.kmInicial,
       kmFinal: f.kmFinal,
-      cargaPosto: valores[0],
-      valorVagner: valores[1],
-      valorFilipe: valores[2],
+      cargaPostoVagner: valores[0],
+      cargaPostoFilipe: valores[1],
+      valorVagner: valores[2],
+      valorFilipe: valores[3],
     };
   }
 
