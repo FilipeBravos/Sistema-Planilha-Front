@@ -1,7 +1,7 @@
 .topo {
   background: #1f2937;
   color: #fff;
-  padding: 12px 24px 0;
+  padding: 12px 12px 0;
 }
 .topo h1 {
   margin: 0 0 12px;
@@ -26,5 +26,5 @@
   font-weight: 600;
 }
 main {
-  padding: 16px 24px 48px;
+  padding: 16px 12px 48px;
 }

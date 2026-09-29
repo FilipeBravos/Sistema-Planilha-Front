@@ -54,6 +54,11 @@ export class PlanilhaUber implements OnInit {
   protected readonly formatarData = formatarData;
   protected readonly hhmm = hhmm;
 
+  /** "Segunda-feira" -> "Seg" */
+  protected abreviar(dia: string): string {
+    return dia.slice(0, 3);
+  }
+
   ngOnInit(): void {
     this.carregar();
   }

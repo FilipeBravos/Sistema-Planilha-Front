@@ -25,38 +25,46 @@
 
 <div class="tabela-wrap">
   <table>
+    <colgroup>
+      <col style="width: 9%" /><col style="width: 4%" />
+      <col style="width: 5%" /><col style="width: 5%" /><col style="width: 4.5%" />
+      <col style="width: 5%" /><col style="width: 5%" /><col style="width: 4.5%" />
+      <col style="width: 5.5%" /><col style="width: 5.5%" /><col style="width: 5%" />
+      <col style="width: 7%" /><col style="width: 7%" /><col style="width: 7%" />
+      <col style="width: 7.5%" /><col style="width: 7.5%" /><col style="width: 6%" />
+    </colgroup>
     <thead>
       <tr>
-        <th>Data</th>
-        <th>Dia da semana</th>
-        <th>Hora inicial Vagner</th>
-        <th>Hora final Vagner</th>
-        <th>Total horas Vagner</th>
-        <th>Hora inicial Filipe</th>
-        <th>Hora final Filipe</th>
-        <th>Total horas Filipe</th>
-        <th>Km inicial</th>
-        <th>Km final</th>
-        <th>Total de Km</th>
-        <th>R$ Carga Posto</th>
-        <th>Valor Vagner</th>
-        <th>Valor Filipe</th>
-        <th>Líquido Vagner</th>
-        <th>Líquido Filipe</th>
-        <th></th>
+        <th rowspan="2">Data</th>
+        <th rowspan="2">Dia</th>
+        <th colspan="3" class="grupo">Vagner</th>
+        <th colspan="3" class="grupo">Filipe</th>
+        <th rowspan="2">Km inicial</th>
+        <th rowspan="2">Km final</th>
+        <th rowspan="2">Total de Km</th>
+        <th rowspan="2">R$ Carga Posto</th>
+        <th rowspan="2">Valor Vagner</th>
+        <th rowspan="2">Valor Filipe</th>
+        <th rowspan="2">Líquido Vagner</th>
+        <th rowspan="2">Líquido Filipe</th>
+        <th rowspan="2"></th>
+      </tr>
+      <tr>
+        <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Total</th>
+        <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Total</th>
       </tr>
     </thead>
     <tbody>
       @for (r of registros(); track r.id) {
         <tr [class.editando]="editandoId() === r.id">
           <td>{{ formatarData(r.data) }}</td>
-          <td>{{ r.diaSemana }}</td>
+          <td [title]="r.diaSemana">{{ abreviar(r.diaSemana) }}</td>
           <td>{{ hhmm(r.horaInicialVagner) }}</td>
           <td>{{ hhmm(r.horaFinalVagner) }}</td>
-          <td>{{ formatarMinutos(r.totalMinutosVagner) }}</td>
+          <td class="total">{{ formatarMinutos(r.totalMinutosVagner) }}</td>
           <td>{{ hhmm(r.horaInicialFilipe) }}</td>
           <td>{{ hhmm(r.horaFinalFilipe) }}</td>
-          <td>{{ formatarMinutos(r.totalMinutosFilipe) }}</td>
+          <td class="total">{{ formatarMinutos(r.totalMinutosFilipe) }}</td>
           <td class="num">{{ r.kmInicial }}</td>
           <td class="num">{{ r.kmFinal }}</td>
           <td class="num">{{ r.totalKm }}</td>
@@ -66,8 +74,8 @@
           <td class="num" [class.negativo]="r.liquidoVagner < 0">{{ r.liquidoVagner | currency: 'BRL' }}</td>
           <td class="num" [class.negativo]="r.liquidoFilipe < 0">{{ r.liquidoFilipe | currency: 'BRL' }}</td>
           <td class="acoes">
-            <button type="button" (click)="editar(r)">Editar</button>
-            <button type="button" class="perigo" (click)="excluir(r)">Excluir</button>
+            <button type="button" title="Editar" aria-label="Editar" (click)="editar(r)">✎</button>
+            <button type="button" class="perigo" title="Excluir" aria-label="Excluir" (click)="excluir(r)">✕</button>
           </td>
         </tr>
       } @empty {
@@ -77,13 +85,13 @@
     <tfoot>
       <tr class="entrada">
         <td><input type="date" name="data" [(ngModel)]="form.data" aria-label="Data" /></td>
-        <td class="calc">{{ diaSemanaPrevia }}</td>
+        <td class="calc" [title]="diaSemanaPrevia">{{ abreviar(diaSemanaPrevia) }}</td>
         <td><input type="time" name="horaInicialVagner" [(ngModel)]="form.horaInicialVagner" aria-label="Hora inicial Vagner" /></td>
         <td><input type="time" name="horaFinalVagner" [(ngModel)]="form.horaFinalVagner" aria-label="Hora final Vagner" /></td>
-        <td class="calc">{{ formatarMinutos(minutosVagnerPrevia) }}</td>
+        <td class="calc total">{{ formatarMinutos(minutosVagnerPrevia) }}</td>
         <td><input type="time" name="horaInicialFilipe" [(ngModel)]="form.horaInicialFilipe" aria-label="Hora inicial Filipe" /></td>
         <td><input type="time" name="horaFinalFilipe" [(ngModel)]="form.horaFinalFilipe" aria-label="Hora final Filipe" /></td>
-        <td class="calc">{{ formatarMinutos(minutosFilipePrevia) }}</td>
+        <td class="calc total">{{ formatarMinutos(minutosFilipePrevia) }}</td>
         <td><input type="number" min="0" name="kmInicial" [(ngModel)]="form.kmInicial" aria-label="Km inicial" /></td>
         <td><input type="number" min="0" name="kmFinal" [(ngModel)]="form.kmFinal" aria-label="Km final" /></td>
         <td class="calc num">{{ totalKmPrevia }}</td>
@@ -93,9 +101,9 @@
         <td class="calc num">{{ liquidoVagnerPrevia | currency: 'BRL' }}</td>
         <td class="calc num">{{ liquidoFilipePrevia | currency: 'BRL' }}</td>
         <td class="acoes">
-          <button type="button" class="primario" (click)="salvar()">{{ editandoId() === null ? 'Adicionar' : 'Salvar' }}</button>
+          <button type="button" class="primario" [title]="editandoId() === null ? 'Adicionar' : 'Salvar'" [attr.aria-label]="editandoId() === null ? 'Adicionar' : 'Salvar'" (click)="salvar()">{{ editandoId() === null ? '+' : '✓' }}</button>
           @if (editandoId() !== null) {
-            <button type="button" (click)="cancelar()">Cancelar</button>
+            <button type="button" title="Cancelar" aria-label="Cancelar" (click)="cancelar()">✕</button>
           }
         </td>
       </tr>

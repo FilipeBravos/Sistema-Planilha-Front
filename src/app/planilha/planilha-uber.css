@@ -44,7 +44,7 @@ dd {
 }
 
 .tabela-wrap {
-  overflow-x: auto;
+  overflow-x: auto; /* só aparece em telas estreitas */
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
@@ -52,19 +52,37 @@ dd {
 table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 0.9rem;
+  min-width: 1100px;
+  table-layout: fixed;
+  font-size: 0.8rem;
 }
 th,
 td {
-  padding: 8px 10px;
+  padding: 6px 4px;
   border-bottom: 1px solid #e5e7eb;
-  white-space: nowrap;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 th {
   background: #f9fafb;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  white-space: normal;
+  vertical-align: bottom;
+}
+th.grupo {
+  text-align: center;
+  background: #eef2ff;
+  border-bottom: 1px solid #c7d2fe;
+}
+th.sub {
+  background: #f5f7ff;
+}
+.total {
+  font-weight: 600;
 }
 .num {
   text-align: right;
@@ -91,24 +109,34 @@ tfoot .entrada td {
 }
 input {
   width: 100%;
-  min-width: 80px;
+  min-width: 0;
   box-sizing: border-box;
-  padding: 5px 6px;
+  padding: 4px 2px;
   border: 1px solid #d1d5db;
   border-radius: 4px;
   font: inherit;
 }
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  display: none;
+}
+input[type='number'] {
+  text-align: right;
+}
 .acoes {
-  display: flex;
-  gap: 6px;
+  text-align: center;
 }
 button {
   border: 1px solid #d1d5db;
   background: #fff;
   border-radius: 4px;
-  padding: 5px 10px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0 1px;
   cursor: pointer;
   font: inherit;
+  line-height: 1;
 }
 button.primario {
   background: #059669;
