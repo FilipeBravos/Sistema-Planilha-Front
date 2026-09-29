@@ -11,7 +11,7 @@ npm test
 ```
 
 ## Tela
-- Cartões no topo: horas (juntos e individual) e faturamento bruto (juntos e individual).
+- Cartões no topo: horas e faturamento bruto/líquido (juntos e individual) e carga do posto discriminada por pessoa (sem somar).
 - Planilha: Data, Dia da semana, Hora inicial/final e Total de horas de cada pessoa (Vagner e Filipe; opcionais), Km inicial/final, Total de Km,
   R$ Carga Posto, Valor Vagner, Valor Filipe, Líquido Vagner, Líquido Filipe.
 - Cada pessoa informa a sua Carga Posto, descontada só do seu valor (Líquido = Valor − Carga Posto).

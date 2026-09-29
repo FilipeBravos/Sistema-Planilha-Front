@@ -3,7 +3,7 @@
     <div class="cartao">
       <h2>Horas trabalhadas</h2>
       <dl>
-        <div class="destaque"><dt>Vagner + Filipe</dt><dd>{{ formatarMinutos(s.minutosTotal) }}</dd></div>
+        <div class="destaque"><dt>Total</dt><dd>{{ formatarMinutos(s.minutosTotal) }}</dd></div>
         <div><dt>Vagner</dt><dd>{{ formatarMinutos(s.minutosVagner) }}</dd></div>
         <div><dt>Filipe</dt><dd>{{ formatarMinutos(s.minutosFilipe) }}</dd></div>
       </dl>
@@ -11,9 +11,24 @@
     <div class="cartao">
       <h2>Faturamento bruto</h2>
       <dl>
-        <div class="destaque"><dt>Vagner + Filipe</dt><dd>{{ s.brutoTotal | currency: 'BRL' }}</dd></div>
+        <div class="destaque"><dt>Total</dt><dd>{{ s.brutoTotal | currency: 'BRL' }}</dd></div>
         <div><dt>Vagner</dt><dd>{{ s.brutoVagner | currency: 'BRL' }}</dd></div>
         <div><dt>Filipe</dt><dd>{{ s.brutoFilipe | currency: 'BRL' }}</dd></div>
+      </dl>
+    </div>
+    <div class="cartao">
+      <h2>Carga do posto</h2>
+      <dl>
+        <div><dt>Vagner</dt><dd>{{ s.cargaPostoVagner | currency: 'BRL' }}</dd></div>
+        <div><dt>Filipe</dt><dd>{{ s.cargaPostoFilipe | currency: 'BRL' }}</dd></div>
+      </dl>
+    </div>
+    <div class="cartao">
+      <h2>Faturamento líquido</h2>
+      <dl>
+        <div class="destaque"><dt>Total</dt><dd>{{ s.liquidoTotal | currency: 'BRL' }}</dd></div>
+        <div><dt>Vagner</dt><dd>{{ s.liquidoVagner | currency: 'BRL' }}</dd></div>
+        <div><dt>Filipe</dt><dd>{{ s.liquidoFilipe | currency: 'BRL' }}</dd></div>
       </dl>
     </div>
   </section>

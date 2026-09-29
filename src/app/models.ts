@@ -30,6 +30,8 @@ export interface Resumo {
   brutoVagner: number;
   brutoFilipe: number;
   brutoTotal: number;
+  cargaPostoVagner: number;
+  cargaPostoFilipe: number;
   liquidoVagner: number;
   liquidoFilipe: number;
   liquidoTotal: number;

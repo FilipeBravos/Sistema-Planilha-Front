@@ -1,13 +1,13 @@
 .resumo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
 }
 .cartao {
   background: #fff;
   border-radius: 8px;
-  padding: 16px 20px;
+  padding: 14px 14px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
 }
 .cartao h2 {
@@ -21,7 +21,7 @@ dl {
   margin: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 6px;
 }
 dt {
   font-size: 0.8rem;
@@ -29,7 +29,8 @@ dt {
 }
 dd {
   margin: 2px 0 0;
-  font-size: 1.15rem;
+  font-size: 1rem;
+  white-space: nowrap;
   font-weight: 600;
 }
 .destaque dd {
