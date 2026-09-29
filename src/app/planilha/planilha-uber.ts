@@ -81,11 +81,11 @@ export class PlanilhaUber implements OnInit {
   }
 
   protected get liquidoVagnerPrevia(): number {
-    return (this.form.valorVagner ?? 0) - (this.form.cargaPosto ?? 0);
+    return (this.form.valorVagner ?? 0) - (this.form.horaInicialVagner ? (this.form.cargaPosto ?? 0) : 0);
   }
 
   protected get liquidoFilipePrevia(): number {
-    return (this.form.valorFilipe ?? 0) - (this.form.cargaPosto ?? 0);
+    return (this.form.valorFilipe ?? 0) - (this.form.horaInicialFilipe ? (this.form.cargaPosto ?? 0) : 0);
   }
 
   protected salvar(): void {
