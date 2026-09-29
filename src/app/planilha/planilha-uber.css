@@ -1,0 +1,120 @@
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.cartao {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
+.cartao h2 {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+dt {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+dd {
+  margin: 2px 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.destaque dd {
+  color: #047857;
+}
+
+.erro {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+.tabela-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+th,
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+  text-align: left;
+}
+th {
+  background: #f9fafb;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.negativo {
+  color: #b91c1c;
+}
+.editando {
+  background: #fef9c3;
+}
+.vazio {
+  text-align: center;
+  color: #6b7280;
+  padding: 24px;
+}
+tfoot .entrada td {
+  background: #f0fdf4;
+  border-top: 2px solid #86efac;
+}
+.calc {
+  color: #4b5563;
+  font-style: italic;
+}
+input {
+  width: 100%;
+  min-width: 80px;
+  box-sizing: border-box;
+  padding: 5px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font: inherit;
+}
+.acoes {
+  display: flex;
+  gap: 6px;
+}
+button {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font: inherit;
+}
+button.primario {
+  background: #059669;
+  border-color: #059669;
+  color: #fff;
+}
+button.perigo {
+  color: #b91c1c;
+}

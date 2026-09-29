@@ -1,0 +1,95 @@
+@if (resumo(); as s) {
+  <section class="resumo">
+    <div class="cartao">
+      <h2>Horas trabalhadas</h2>
+      <dl>
+        <div class="destaque"><dt>Vagner + Filipe</dt><dd>{{ formatarMinutos(s.minutosTotal) }}</dd></div>
+        <div><dt>Vagner</dt><dd>{{ formatarMinutos(s.minutosVagner) }}</dd></div>
+        <div><dt>Filipe</dt><dd>{{ formatarMinutos(s.minutosFilipe) }}</dd></div>
+      </dl>
+    </div>
+    <div class="cartao">
+      <h2>Faturamento bruto</h2>
+      <dl>
+        <div class="destaque"><dt>Vagner + Filipe</dt><dd>{{ s.brutoTotal | currency: 'BRL' }}</dd></div>
+        <div><dt>Vagner</dt><dd>{{ s.brutoVagner | currency: 'BRL' }}</dd></div>
+        <div><dt>Filipe</dt><dd>{{ s.brutoFilipe | currency: 'BRL' }}</dd></div>
+      </dl>
+    </div>
+  </section>
+}
+
+@if (erro()) {
+  <p class="erro" role="alert">{{ erro() }}</p>
+}
+
+<div class="tabela-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Dia da semana</th>
+        <th>Hora inicial</th>
+        <th>Hora final</th>
+        <th>Total de horas</th>
+        <th>Km inicial</th>
+        <th>Km final</th>
+        <th>Total de Km</th>
+        <th>R$ Carga Posto</th>
+        <th>Valor Vagner</th>
+        <th>Valor Filipe</th>
+        <th>Líquido Vagner</th>
+        <th>Líquido Filipe</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (r of registros(); track r.id) {
+        <tr [class.editando]="editandoId() === r.id">
+          <td>{{ formatarData(r.data) }}</td>
+          <td>{{ r.diaSemana }}</td>
+          <td>{{ hhmm(r.horaInicial) }}</td>
+          <td>{{ hhmm(r.horaFinal) }}</td>
+          <td>{{ formatarMinutos(r.totalMinutos) }}</td>
+          <td class="num">{{ r.kmInicial }}</td>
+          <td class="num">{{ r.kmFinal }}</td>
+          <td class="num">{{ r.totalKm }}</td>
+          <td class="num">{{ r.cargaPosto | currency: 'BRL' }}</td>
+          <td class="num">{{ r.valorVagner | currency: 'BRL' }}</td>
+          <td class="num">{{ r.valorFilipe | currency: 'BRL' }}</td>
+          <td class="num" [class.negativo]="r.liquidoVagner < 0">{{ r.liquidoVagner | currency: 'BRL' }}</td>
+          <td class="num" [class.negativo]="r.liquidoFilipe < 0">{{ r.liquidoFilipe | currency: 'BRL' }}</td>
+          <td class="acoes">
+            <button type="button" (click)="editar(r)">Editar</button>
+            <button type="button" class="perigo" (click)="excluir(r)">Excluir</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="14" class="vazio">Nenhum lançamento ainda. Use a linha abaixo para adicionar.</td></tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr class="entrada">
+        <td><input type="date" name="data" [(ngModel)]="form.data" aria-label="Data" /></td>
+        <td class="calc">{{ diaSemanaPrevia }}</td>
+        <td><input type="time" name="horaInicial" [(ngModel)]="form.horaInicial" aria-label="Hora inicial" /></td>
+        <td><input type="time" name="horaFinal" [(ngModel)]="form.horaFinal" aria-label="Hora final" /></td>
+        <td class="calc">{{ formatarMinutos(totalMinutosPrevia) }}</td>
+        <td><input type="number" min="0" name="kmInicial" [(ngModel)]="form.kmInicial" aria-label="Km inicial" /></td>
+        <td><input type="number" min="0" name="kmFinal" [(ngModel)]="form.kmFinal" aria-label="Km final" /></td>
+        <td class="calc num">{{ totalKmPrevia }}</td>
+        <td><input type="number" min="0" step="0.01" name="cargaPosto" [(ngModel)]="form.cargaPosto" aria-label="Carga posto" /></td>
+        <td><input type="number" min="0" step="0.01" name="valorVagner" [(ngModel)]="form.valorVagner" aria-label="Valor Vagner" /></td>
+        <td><input type="number" min="0" step="0.01" name="valorFilipe" [(ngModel)]="form.valorFilipe" aria-label="Valor Filipe" /></td>
+        <td class="calc num">{{ liquidoVagnerPrevia | currency: 'BRL' }}</td>
+        <td class="calc num">{{ liquidoFilipePrevia | currency: 'BRL' }}</td>
+        <td class="acoes">
+          <button type="button" class="primario" (click)="salvar()">{{ editandoId() === null ? 'Adicionar' : 'Salvar' }}</button>
+          @if (editandoId() !== null) {
+            <button type="button" (click)="cancelar()">Cancelar</button>
+          }
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
