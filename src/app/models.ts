@@ -109,3 +109,23 @@ export interface EmprestimoResumo {
   saldo: number;
   porCredor: { credor: Credor; emprestado: number; pago: number; saldo: number }[];
 }
+
+export interface MesRelatorio {
+  mes: string;
+  faturamentoBruto: number;
+  cargaPosto: number;
+  faturamentoLiquido: number;
+  despesas: number;
+  parcelasEmprestimos: number;
+  resultado: number;
+}
+
+export interface Relatorio {
+  inicio: string;
+  fim: string;
+  meses: MesRelatorio[];
+  totais: MesRelatorio;
+  despesasPorCategoria: { categoria: CategoriaDespesa; total: number; percentual: number }[];
+  maioresDespesas: { categoria: CategoriaDespesa; nome: string; total: number; percentual: number }[];
+  emprestimos: { totalEmprestado: number; totalPago: number; saldoDevedor: number };
+}

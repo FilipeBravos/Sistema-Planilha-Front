@@ -4,6 +4,7 @@
     <button type="button" class="aba" [class.ativa]="aba() === 'uber'" (click)="aba.set('uber')">Uber</button>
     <button type="button" class="aba" [class.ativa]="aba() === 'despesas'" (click)="aba.set('despesas')">Despesas</button>
     <button type="button" class="aba" [class.ativa]="aba() === 'emprestimos'" (click)="aba.set('emprestimos')">Empréstimos</button>
+    <button type="button" class="aba" [class.ativa]="aba() === 'relatorios'" (click)="aba.set('relatorios')">Relatórios</button>
   </nav>
 </header>
 
@@ -17,6 +18,9 @@
     }
     @case ('emprestimos') {
       <app-emprestimos />
+    }
+    @case ('relatorios') {
+      <app-relatorios />
     }
   }
 </main>

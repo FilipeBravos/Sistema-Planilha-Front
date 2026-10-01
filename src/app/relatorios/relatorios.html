@@ -1,0 +1,243 @@
+<div class="filtro" role="group" aria-label="Período do relatório">
+  @for (p of presets; track p.id) {
+    <button type="button" [class.ativo]="preset() === p.id" (click)="selecionar(p.id)">{{ p.rotulo }}</button>
+  }
+  @if (relatorio(); as r) {
+    <span class="intervalo">{{ rotuloMesLongo(r.meses[0].mes) }} a {{ rotuloMesLongo(r.meses[r.meses.length - 1].mes) }}</span>
+  }
+</div>
+
+@if (erro()) {
+  <p class="erro" role="alert">{{ erro() }}</p>
+}
+
+@if (relatorio(); as r) {
+  <div class="painel" [class.carregando]="carregando()">
+    <section class="tiles" aria-label="Resumo do período">
+      <div class="tile">
+        <h2>Receita</h2>
+        <p class="valor">{{ r.totais.faturamentoLiquido | currency: 'BRL' }}</p>
+        <p class="sub">Bruto {{ r.totais.faturamentoBruto | currency: 'BRL' }} − carga do posto {{ r.totais.cargaPosto | currency: 'BRL' }}</p>
+      </div>
+      <div class="tile">
+        <h2>Despesas</h2>
+        <p class="valor">{{ r.totais.despesas | currency: 'BRL' }}</p>
+        <p class="sub">
+          @if (percentualDaReceita() !== null) {
+            {{ percentualDaReceita() }}% da receita
+          } @else {
+            Sem receita no período
+          }
+        </p>
+      </div>
+      <div class="tile">
+        <h2>Empréstimos</h2>
+        <p class="valor">{{ r.totais.parcelasEmprestimos | currency: 'BRL' }}</p>
+        <p class="sub">Parcelas previstas · saldo devedor atual {{ r.emprestimos.saldoDevedor | currency: 'BRL' }}</p>
+      </div>
+      <div class="tile">
+        <h2>Resultado</h2>
+        <p class="valor" [class.bom]="r.totais.resultado > 0" [class.ruim]="r.totais.resultado < 0">
+          <span aria-hidden="true">{{ r.totais.resultado > 0 ? '▲' : r.totais.resultado < 0 ? '▼' : '–' }}</span>
+          {{ r.totais.resultado | currency: 'BRL' }}
+        </p>
+        <p class="sub">{{ r.totais.resultado > 0 ? 'Sobrou' : r.totais.resultado < 0 ? 'Faltou' : 'Zerado' }} · receita − despesas − empréstimos</p>
+      </div>
+    </section>
+
+    @if (semDados()) {
+      <p class="vazio">Ainda não há receita, despesas nem parcelas de empréstimo neste período.</p>
+    } @else {
+      <section class="cartao">
+        <header>
+          <h2>Receita × saídas por mês</h2>
+          <ul class="legenda">
+            <li><span class="chave receita"></span>Receita (líquida)</li>
+            <li><span class="chave despesas"></span>Despesas</li>
+            <li><span class="chave emprestimos"></span>Empréstimos (parcelas)</li>
+          </ul>
+        </header>
+        <div class="grafico">
+          @if (graficoSaidas(); as g) {
+            <svg [attr.viewBox]="'0 0 ' + largura + ' ' + altura" role="img" aria-label="Receita ao lado de despesas e parcelas de empréstimos, mês a mês">
+              @for (t of g.ticks; track t.y) {
+                <line class="grade" x1="64" [attr.x2]="largura - 12" [attr.y1]="t.y" [attr.y2]="t.y" />
+                <text class="eixo" x="56" [attr.y]="t.y + 4" text-anchor="end">{{ t.rotulo }}</text>
+              }
+              <line class="base" x1="64" [attr.x2]="largura - 12" [attr.y1]="g.yBase" [attr.y2]="g.yBase" />
+              @for (c of g.colunas; track c.indice) {
+                @if (c.receita) { <path class="m-receita" [attr.d]="c.receita" /> }
+                @if (c.despesas) { <path class="m-despesas" [attr.d]="c.despesas" /> }
+                @if (c.emprestimos) { <path class="m-emprestimos" [attr.d]="c.emprestimos" /> }
+                <text class="eixo" [attr.x]="c.xCentro" [attr.y]="g.yBase + 18" text-anchor="middle">{{ c.rotulo }}</text>
+                <rect
+                  class="faixa"
+                  [class.ativa]="dica()?.grafico === 'saidas' && dica()?.indice === c.indice"
+                  [attr.x]="c.hitX" y="0" [attr.width]="c.hitLargura" [attr.height]="g.yBase"
+                  tabindex="0"
+                  [attr.aria-label]="rotuloMesLongo(r.meses[c.indice].mes)"
+                  (pointermove)="mostrar($event, 'saidas', c.indice)"
+                  (pointerleave)="esconder()"
+                  (focus)="focar($event, 'saidas', c.indice)"
+                  (blur)="esconder()"
+                />
+              }
+            </svg>
+            @if (dica(); as d) {
+              @if (d.grafico === 'saidas') {
+                <ng-container *ngTemplateOutlet="balao; context: { $implicit: d }" />
+              }
+            }
+          }
+        </div>
+      </section>
+
+      <section class="cartao">
+        <header>
+          <h2>Resultado do mês (receita − despesas − empréstimos)</h2>
+          <ul class="legenda">
+            <li><span class="chave sobrou"></span>Sobrou</li>
+            <li><span class="chave faltou"></span>Faltou</li>
+          </ul>
+        </header>
+        <div class="grafico">
+          @if (graficoResultado(); as g) {
+            <svg [attr.viewBox]="'0 0 ' + largura + ' ' + altura" role="img" aria-label="Resultado de cada mês: quanto sobrou ou faltou">
+              @for (t of g.ticks; track t.y) {
+                <line class="grade" x1="64" [attr.x2]="largura - 12" [attr.y1]="t.y" [attr.y2]="t.y" />
+                <text class="eixo" x="56" [attr.y]="t.y + 4" text-anchor="end">{{ t.rotulo }}</text>
+              }
+              <line class="base" x1="64" [attr.x2]="largura - 12" [attr.y1]="g.yZero" [attr.y2]="g.yZero" />
+              @for (c of g.colunas; track c.indice) {
+                @if (c.barra) { <path [class]="c.positivo ? 'm-sobrou' : 'm-faltou'" [attr.d]="c.barra" /> }
+                @if (c.rotuloValor; as rv) {
+                  <text class="valor-fim" [attr.x]="rv.x" [attr.y]="rv.y" text-anchor="middle">{{ r.meses[c.indice].resultado | currency: 'BRL' }}</text>
+                }
+                <text class="eixo" [attr.x]="c.xCentro" [attr.y]="altura - 14" text-anchor="middle">{{ c.rotulo }}</text>
+                <rect
+                  class="faixa"
+                  [class.ativa]="dica()?.grafico === 'resultado' && dica()?.indice === c.indice"
+                  [attr.x]="c.hitX" y="0" [attr.width]="c.hitLargura" [attr.height]="altura - 32"
+                  tabindex="0"
+                  [attr.aria-label]="rotuloMesLongo(r.meses[c.indice].mes)"
+                  (pointermove)="mostrar($event, 'resultado', c.indice)"
+                  (pointerleave)="esconder()"
+                  (focus)="focar($event, 'resultado', c.indice)"
+                  (blur)="esconder()"
+                />
+              }
+            </svg>
+            @if (dica(); as d) {
+              @if (d.grafico === 'resultado') {
+                <ng-container *ngTemplateOutlet="balao; context: { $implicit: d }" />
+              }
+            }
+          }
+        </div>
+      </section>
+    }
+
+    <section class="cartao">
+      <header>
+        <h2>O que mais drena dinheiro</h2>
+      </header>
+      @if (maiorCategoria(); as cat) {
+        <p class="destaque-texto">
+          A maior despesa é <strong>{{ rotuloCategoria(cat.categoria) }}</strong>: {{ cat.total | currency: 'BRL' }}
+          ({{ cat.percentual | number: '1.0-1' }}% das despesas do período).
+          @if (maiorItem(); as item) {
+            O item que mais pesa é <strong>{{ item.nome }}</strong> ({{ rotuloCategoria(item.categoria) }}), com {{ item.total | currency: 'BRL' }}.
+          }
+        </p>
+        <div class="rankings">
+          <div>
+            <h3>Por categoria</h3>
+            <ol class="ranking">
+              @for (c of r.despesasPorCategoria; track c.categoria; let i = $index) {
+                <li [class.primeiro]="i === 0">
+                  <span class="nome">{{ rotuloCategoria(c.categoria) }}</span>
+                  <span class="trilho"><span class="barra" [style.width.%]="largura100(c.total, r.despesasPorCategoria[0].total)"></span></span>
+                  <span class="num">{{ c.total | currency: 'BRL' }} · {{ c.percentual | number: '1.0-1' }}%</span>
+                </li>
+              }
+            </ol>
+          </div>
+          <div>
+            <h3>Os 10 itens mais caros</h3>
+            <ol class="ranking">
+              @for (item of r.maioresDespesas; track item.categoria + item.nome; let i = $index) {
+                <li [class.primeiro]="i === 0">
+                  <span class="nome">{{ item.nome }} <small>{{ rotuloCategoria(item.categoria) }}</small></span>
+                  <span class="trilho"><span class="barra" [style.width.%]="largura100(item.total, r.maioresDespesas[0].total)"></span></span>
+                  <span class="num">{{ item.total | currency: 'BRL' }} · {{ item.percentual | number: '1.0-1' }}%</span>
+                </li>
+              }
+            </ol>
+          </div>
+        </div>
+      } @else {
+        <p class="vazio">Nenhuma despesa vence neste período.</p>
+      }
+    </section>
+
+    <section class="cartao">
+      <header>
+        <h2>Histórico mensal</h2>
+      </header>
+      <div class="tabela-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th class="num">Faturamento bruto</th>
+              <th class="num">Carga do posto</th>
+              <th class="num">Receita (líquida)</th>
+              <th class="num">Despesas</th>
+              <th class="num">Empréstimos</th>
+              <th class="num">Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (m of r.meses; track m.mes) {
+              <tr>
+                <td>{{ rotuloMesCurto(m.mes) }}</td>
+                <td class="num">{{ m.faturamentoBruto | currency: 'BRL' }}</td>
+                <td class="num">{{ m.cargaPosto | currency: 'BRL' }}</td>
+                <td class="num">{{ m.faturamentoLiquido | currency: 'BRL' }}</td>
+                <td class="num">{{ m.despesas | currency: 'BRL' }}</td>
+                <td class="num">{{ m.parcelasEmprestimos | currency: 'BRL' }}</td>
+                <td class="num" [class.ruim]="m.resultado < 0">{{ m.resultado | currency: 'BRL' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td class="num">{{ r.totais.faturamentoBruto | currency: 'BRL' }}</td>
+              <td class="num">{{ r.totais.cargaPosto | currency: 'BRL' }}</td>
+              <td class="num">{{ r.totais.faturamentoLiquido | currency: 'BRL' }}</td>
+              <td class="num">{{ r.totais.despesas | currency: 'BRL' }}</td>
+              <td class="num">{{ r.totais.parcelasEmprestimos | currency: 'BRL' }}</td>
+              <td class="num" [class.ruim]="r.totais.resultado < 0">{{ r.totais.resultado | currency: 'BRL' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="nota">Despesas contam pelo vencimento (parcelas do cartão em cada mês). As parcelas de empréstimo são previstas: valor ÷ vezes, a 1ª um mês após a data do empréstimo.</p>
+    </section>
+  </div>
+} @else if (!erro()) {
+  <p class="vazio">Carregando…</p>
+}
+
+<ng-template #balao let-d>
+  @if (mesDaDica(); as m) {
+    <div class="balao" role="status" [style.left.px]="esquerdaDaDica(d)" [style.top.px]="d.y">
+      <p class="titulo">{{ rotuloMesLongo(m.mes) }}</p>
+      <p class="linha"><span class="chave receita"></span><strong>{{ m.faturamentoLiquido | currency: 'BRL' }}</strong><span>Receita</span></p>
+      <p class="linha"><span class="chave despesas"></span><strong>{{ m.despesas | currency: 'BRL' }}</strong><span>Despesas</span></p>
+      <p class="linha"><span class="chave emprestimos"></span><strong>{{ m.parcelasEmprestimos | currency: 'BRL' }}</strong><span>Empréstimos</span></p>
+      <p class="linha resultado"><strong>{{ m.resultado | currency: 'BRL' }}</strong><span>Resultado</span></p>
+    </div>
+  }
+</ng-template>

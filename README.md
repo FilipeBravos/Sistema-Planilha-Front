@@ -1,6 +1,6 @@
 # Sistema Planilha - Front
 
-Angular 20 (standalone components). Três abas: **Uber** (planilha de ganhos diários de Vagner e Filipe), **Despesas** e **Empréstimos**.
+Angular 20 (standalone components). Quatro abas: **Uber** (planilha de ganhos diários de Vagner e Filipe), **Despesas**, **Empréstimos** e **Relatórios**.
 
 ## Executar
 Requer o backend rodando em `http://localhost:8080` (ver `Sistema-Planilha-Back`; URL em `src/app/api.config.ts`).
@@ -32,3 +32,12 @@ npm test
 - Campos: data, valor do empréstimo, vezes (em quantas parcelas foi dividido) e valor pago. A tabela mostra o valor de cada parcela, o saldo a pagar e a situação (% pago ou "Quitado").
 - Cartões no topo: total emprestado, total pago e saldo a pagar. Cada botão de origem mostra o saldo daquela origem e filtra a lista.
 - Para registrar um novo pagamento, edite o empréstimo (✎) e atualize o "Valor pago".
+
+## Aba Relatórios
+Painel consolidado, com período de 3 meses, 6 meses, 12 meses (padrão) ou ano atual:
+- **Cartões:** receita (faturamento líquido), despesas, parcelas de empréstimos e resultado (receita − despesas − empréstimos) do período.
+- **Receita × saídas por mês:** uma coluna de receita ao lado de uma coluna empilhada de despesas + parcelas de empréstimos. Passe o mouse (ou use Tab) sobre um mês para ver todos os valores.
+- **Resultado do mês:** colunas para cima (sobrou) e para baixo (faltou).
+- **O que mais drena dinheiro:** ranking das despesas por categoria e os 10 itens mais caros, com o maior em destaque e o percentual do total.
+- **Histórico mensal:** a tabela com os números de cada mês e o total.
+- Despesas contam pelo vencimento; as parcelas de empréstimo são previstas (valor ÷ vezes, a 1ª um mês após a data do empréstimo), pois o sistema guarda só o total pago.
