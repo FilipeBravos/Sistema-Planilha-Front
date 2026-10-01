@@ -18,7 +18,7 @@ export const CATEGORIAS: InfoCategoria[] = [
       'REVISÃO',
       'PNEUS/2025',
       'PNEUS DIANT 2026/',
-      'PNEUS TRAZ 2026/',
+      'PNEUS TRAS 2026/',
       'SEGURO',
       'TURBO CARGA',
       'ACESSÓRIOS',
