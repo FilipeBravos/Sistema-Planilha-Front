@@ -11,6 +11,8 @@ npm test
 ```
 Ao abrir, aparece a **tela de login** (usuários criados pelo backend, veja o README dele). Depois de entrar, o topo mostra o usuário, "Alterar senha" e "Sair". Se a sessão expirar, o sistema volta sozinho para o login.
 
+**Atualização automática:** com a aba do navegador visível, as telas buscam dados novos a cada 15 segundos (e ao voltar para a aba), então o que outra pessoa lançar em outro computador aparece sem apertar F5. O topo mostra "↻ Atualizado às HH:MM:SS"; clicar ali atualiza na hora. A atualização não mexe no que você está digitando e só redesenha a tela quando os dados mudaram (`src/app/atualizacao.service.ts`).
+
 ## Produção
 O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automático, repasse de `/api` ao backend, cache dos arquivos com hash). Passo a passo de publicação em `Sistema-Planilha-Back/DEPLOY.md`.
 

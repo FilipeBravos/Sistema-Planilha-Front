@@ -1,8 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { EmprestimoService } from '../emprestimo.service';
 import { formatarData } from '../format';
 import { Credor, Emprestimo, EmprestimoRequest, EmprestimoResumo } from '../models';
@@ -29,6 +31,8 @@ function formularioVazio(credor: Credor | '' = ''): FormularioEmprestimo {
 })
 export class Emprestimos implements OnInit {
   private readonly service = inject(EmprestimoService);
+  private readonly atualizacao = inject(AtualizacaoService);
+  private carga?: Subscription;
 
   protected readonly credores = CREDORES;
   protected readonly rotuloCredor = rotuloCredor;
@@ -51,6 +55,10 @@ export class Emprestimos implements OnInit {
   protected readonly terceirosConhecidos = computed(() => [
     ...new Set(this.emprestimos().flatMap((e) => (e.nomeTerceiro ? [e.nomeTerceiro] : []))),
   ]);
+
+  constructor() {
+    this.atualizacao.pedido$.pipe(takeUntilDestroyed()).subscribe(() => this.carregar(true));
+  }
 
   ngOnInit(): void {
     this.carregar();
@@ -126,13 +134,23 @@ export class Emprestimos implements OnInit {
     });
   }
 
-  private carregar(): void {
-    forkJoin({ lista: this.service.listar(this.credorAtual()), resumo: this.service.resumo() }).subscribe({
+  /** `silencioso`: atualização automática; não mostra erros passageiros e não mexe no formulário. */
+  private carregar(silencioso = false): void {
+    this.carga?.unsubscribe(); // uma consulta antiga não pode sobrescrever uma mais nova
+    this.carga = forkJoin({ lista: this.service.listar(this.credorAtual()), resumo: this.service.resumo() }).subscribe({
       next: ({ lista, resumo }) => {
-        this.emprestimos.set(lista);
-        this.resumo.set(resumo);
+        definirSeMudou(this.emprestimos, lista);
+        definirSeMudou(this.resumo, resumo);
+        if (this.erro() === MSG_SEM_CONEXAO) {
+          this.erro.set('');
+        }
+        this.atualizacao.registrar();
       },
-      error: (e: HttpErrorResponse) => this.erro.set(this.mensagemDeErro(e)),
+      error: (e: HttpErrorResponse) => {
+        if (!silencioso) {
+          this.erro.set(this.mensagemDeErro(e));
+        }
+      },
     });
   }
 
@@ -176,7 +194,7 @@ export class Emprestimos implements OnInit {
 
   private mensagemDeErro(e: HttpErrorResponse): string {
     if (e.status === 0) {
-      return 'Não foi possível conectar ao servidor (http://localhost:8080).';
+      return MSG_SEM_CONEXAO;
     }
     const erros = e.error?.erros as Record<string, string> | undefined;
     if (erros) {

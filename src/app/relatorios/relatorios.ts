@@ -1,6 +1,9 @@
 import { CurrencyPipe, DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
+import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { rotuloCategoria } from '../despesas/despesas-catalogo';
 import { paraIso } from '../format';
 import { MesRelatorio, Relatorio } from '../models';
@@ -41,6 +44,8 @@ function intervaloDe(preset: Preset): { inicio: string; fim: string } {
 })
 export class Relatorios implements OnInit {
   private readonly service = inject(RelatorioService);
+  private readonly atualizacao = inject(AtualizacaoService);
+  private carga?: Subscription;
 
   protected readonly presets = PRESETS;
   protected readonly largura = LARGURA;
@@ -78,6 +83,10 @@ export class Relatorios implements OnInit {
   });
   protected readonly maiorCategoria = computed(() => this.relatorio()?.despesasPorCategoria[0] ?? null);
   protected readonly maiorItem = computed(() => this.relatorio()?.maioresDespesas[0] ?? null);
+
+  constructor() {
+    this.atualizacao.pedido$.pipe(takeUntilDestroyed()).subscribe(() => this.carregar(true));
+  }
 
   ngOnInit(): void {
     this.carregar();
@@ -123,21 +132,26 @@ export class Relatorios implements OnInit {
     return (elemento.closest('.grafico') as HTMLElement).getBoundingClientRect();
   }
 
-  private carregar(): void {
+  /** `silencioso`: atualização automática; não escurece a tela, não fecha o balão e não mostra erros passageiros. */
+  private carregar(silencioso = false): void {
     const { inicio, fim } = intervaloDe(this.preset());
-    this.carregando.set(true);
-    this.dica.set(null);
-    this.service.dashboard(inicio, fim).subscribe({
+    if (!silencioso) {
+      this.carregando.set(true);
+      this.dica.set(null);
+    }
+    this.carga?.unsubscribe(); // uma consulta antiga não pode sobrescrever uma mais nova
+    this.carga = this.service.dashboard(inicio, fim).subscribe({
       next: (r) => {
-        this.relatorio.set(r);
+        definirSeMudou(this.relatorio, r);
         this.erro.set('');
         this.carregando.set(false);
+        this.atualizacao.registrar();
       },
       error: (e: HttpErrorResponse) => {
-        this.erro.set(
-          e.status === 0 ? 'Não foi possível conectar ao servidor (http://localhost:8080).' : (e.error?.mensagem ?? e.error?.message ?? 'Erro inesperado.'),
-        );
-        this.carregando.set(false);
+        if (!silencioso) {
+          this.erro.set(e.status === 0 ? MSG_SEM_CONEXAO : (e.error?.mensagem ?? e.error?.message ?? 'Erro inesperado.'));
+          this.carregando.set(false);
+        }
       },
     });
   }

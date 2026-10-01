@@ -1,8 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { Periodo, diaDaSemana, formatarData, formatarMinutos, hhmm, minutosEntre } from '../format';
 import { FiltroPeriodo } from '../filtro-periodo/filtro-periodo';
 import { Registro, RegistroRequest, Resumo } from '../models';
@@ -46,6 +48,12 @@ function formularioVazio(): FormularioRegistro {
 })
 export class PlanilhaUber {
   private readonly service = inject(RegistroService);
+  private readonly atualizacao = inject(AtualizacaoService);
+  private carga?: Subscription;
+
+  constructor() {
+    this.atualizacao.pedido$.pipe(takeUntilDestroyed()).subscribe(() => this.carregar(true));
+  }
 
   protected readonly registros = signal<Registro[]>([]);
   protected readonly resumo = signal<Resumo | null>(null);
@@ -153,14 +161,24 @@ export class PlanilhaUber {
     });
   }
 
-  private carregar(): void {
+  /** `silencioso`: atualização automática; não mostra erros passageiros e não mexe no formulário. */
+  private carregar(silencioso = false): void {
     const periodo = this.periodo;
-    forkJoin({ registros: this.service.listar(periodo), resumo: this.service.resumo(periodo) }).subscribe({
+    this.carga?.unsubscribe(); // uma consulta antiga não pode sobrescrever uma mais nova
+    this.carga = forkJoin({ registros: this.service.listar(periodo), resumo: this.service.resumo(periodo) }).subscribe({
       next: ({ registros, resumo }) => {
-        this.registros.set(registros);
-        this.resumo.set(resumo);
+        definirSeMudou(this.registros, registros);
+        definirSeMudou(this.resumo, resumo);
+        if (this.erro() === MSG_SEM_CONEXAO) {
+          this.erro.set('');
+        }
+        this.atualizacao.registrar();
       },
-      error: (e: HttpErrorResponse) => this.erro.set(this.mensagemDeErro(e)),
+      error: (e: HttpErrorResponse) => {
+        if (!silencioso) {
+          this.erro.set(this.mensagemDeErro(e));
+        }
+      },
     });
   }
 
@@ -201,7 +219,7 @@ export class PlanilhaUber {
 
   private mensagemDeErro(e: HttpErrorResponse): string {
     if (e.status === 0) {
-      return 'Não foi possível conectar ao servidor (http://localhost:8080).';
+      return MSG_SEM_CONEXAO;
     }
     const erros = e.error?.erros as Record<string, string> | undefined;
     if (erros) {
