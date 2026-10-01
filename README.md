@@ -38,6 +38,6 @@ Painel consolidado, com período de 3 meses, 6 meses, 12 meses (padrão) ou ano 
 - **Cartões:** receita (faturamento líquido), despesas, parcelas de empréstimos e resultado (receita − despesas − empréstimos) do período.
 - **Receita × saídas por mês:** uma coluna de receita ao lado de uma coluna empilhada de despesas + parcelas de empréstimos. Passe o mouse (ou use Tab) sobre um mês para ver todos os valores.
 - **Resultado do mês:** colunas para cima (sobrou) e para baixo (faltou).
-- **O que mais drena dinheiro:** ranking das despesas por categoria e os 10 itens mais caros, com o maior em destaque e o percentual do total.
+- **O que mais gera despesa:** ranking das despesas por categoria e os 10 itens mais caros, com o maior em destaque e o percentual do total.
 - **Histórico mensal:** a tabela com os números de cada mês e o total.
 - Despesas contam pelo vencimento; as parcelas de empréstimo são previstas (valor ÷ vezes, a 1ª um mês após a data do empréstimo), pois o sistema guarda só o total pago.
