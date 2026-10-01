@@ -21,7 +21,8 @@ npm test
 
 ## Aba Despesas
 - Categorias: Carro, Energia elétrica, Moto, Plano de saúde, Farmácia, Despesas Lord e Amora, Despesas Filipe, Despesas Vagner, Despesas Romilda e Internet e Telefone. Cada botão mostra o total da categoria no período; "Todas" mostra o total geral.
-- Em cada categoria dá para adicionar, editar e remover despesas (linha verde no fim da tabela; ✎ edita, ✕ remove).
-- Campos: data, nome, forma de pagamento (Dinheiro, Cartão, Cheque ou Boleto), valor e, no cartão, o número de parcelas (mostra o valor de cada parcela).
+- Formulário "Nova despesa" no topo: data da compra, categoria, nome, forma de pagamento (Dinheiro, Cartão, Cheque ou Boleto), valor e, no cartão, o número de parcelas. Enquanto você preenche um cartão aparece a prévia (ex.: "3x de R$ 666,67 — vencem de 25/10/2026 a 25/12/2026").
+- **Vencimentos por mês:** a tabela e os totais mostram o que **vence** no período. Fora do cartão há um vencimento (na data da compra); no cartão, uma parcela por mês (a 1ª na data da compra), com "Parcela 2/3" e a compra de origem. A última parcela absorve o arredondamento.
+- ✎ edita e ✕ remove a **compra inteira** (todas as parcelas), a partir de qualquer linha dela.
 - O nome aceita texto livre; ao digitar aparecem as sugestões da categoria (lista em `src/app/despesas/despesas-catalogo.ts`).
 - Usa o mesmo filtro de período (semana/mês/tudo) da aba Uber.

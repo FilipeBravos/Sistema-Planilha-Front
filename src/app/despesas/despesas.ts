@@ -6,7 +6,8 @@ import { forkJoin } from 'rxjs';
 import { DespesaService } from '../despesa.service';
 import { FiltroPeriodo } from '../filtro-periodo/filtro-periodo';
 import { Periodo, formatarData } from '../format';
-import { CategoriaDespesa, Despesa, DespesaRequest, DespesaResumo, FormaPagamento } from '../models';
+import { CategoriaDespesa, DespesaRequest, DespesaResumo, FormaPagamento, Vencimento } from '../models';
+import { calcularParcelas } from './parcelas';
 import { CATEGORIAS, FORMAS_PAGAMENTO, rotuloCategoria, rotuloForma } from './despesas-catalogo';
 
 interface FormularioDespesa {
@@ -39,7 +40,7 @@ export class Despesas {
   protected readonly rotuloForma = rotuloForma;
   protected readonly formatarData = formatarData;
 
-  protected readonly despesas = signal<Despesa[]>([]);
+  protected readonly vencimentos = signal<Vencimento[]>([]);
   protected readonly resumo = signal<DespesaResumo | null>(null);
   protected readonly erro = signal('');
   protected readonly editandoId = signal<number | null>(null);
@@ -77,9 +78,21 @@ export class Despesas {
     return this.form.formaPagamento === 'CARTAO';
   }
 
-  protected get valorParcelaPrevia(): number | null {
-    const { valor, parcelas } = this.form;
-    return this.ehCartao && valor && parcelas && parcelas > 0 ? Math.round((valor / parcelas) * 100) / 100 : null;
+  /** Resumo das parcelas do cartão, mostrado enquanto o formulário é preenchido. */
+  protected get previaParcelas(): string {
+    const { data, valor, parcelas } = this.form;
+    if (!this.ehCartao || !data || !valor || valor <= 0 || !parcelas || parcelas < 1 || parcelas > 60) {
+      return '';
+    }
+    const lista = calcularParcelas(data, valor, Math.floor(parcelas));
+    const brl = (n: number) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const primeira = lista[0];
+    const ultima = lista[lista.length - 1];
+    let texto = `${lista.length}x de ${brl(primeira.valor)}`;
+    if (ultima.valor !== primeira.valor) {
+      texto += ` (a última de ${brl(ultima.valor)})`;
+    }
+    return `${texto} — vencem de ${formatarData(primeira.vencimento)} a ${formatarData(ultima.vencimento)}`;
   }
 
   protected mudouForma(): void {
@@ -109,16 +122,16 @@ export class Despesas {
     });
   }
 
-  protected editar(d: Despesa): void {
-    this.editandoId.set(d.id);
+  protected editar(v: Vencimento): void {
+    this.editandoId.set(v.despesaId);
     this.erro.set('');
     this.form = {
-      categoria: d.categoria,
-      nome: d.nome,
-      data: d.data,
-      valor: d.valor,
-      formaPagamento: d.formaPagamento,
-      parcelas: d.parcelas,
+      categoria: v.categoria,
+      nome: v.nome,
+      data: v.dataCompra,
+      valor: v.valorTotal,
+      formaPagamento: v.formaPagamento,
+      parcelas: v.parcelas,
     };
   }
 
@@ -128,13 +141,14 @@ export class Despesas {
     this.form = formularioVazio(this.categoriaAtual() ?? '');
   }
 
-  protected excluir(d: Despesa): void {
-    if (!confirm(`Excluir a despesa "${d.nome}" de ${formatarData(d.data)}?`)) {
+  protected excluir(v: Vencimento): void {
+    const aviso = v.parcelas ? ` Todas as ${v.parcelas} parcelas serão removidas.` : '';
+    if (!confirm(`Excluir a despesa "${v.nome}" (compra de ${formatarData(v.dataCompra)})?${aviso}`)) {
       return;
     }
-    this.service.excluir(d.id).subscribe({
+    this.service.excluir(v.despesaId).subscribe({
       next: () => {
-        if (this.editandoId() === d.id) {
+        if (this.editandoId() === v.despesaId) {
           this.cancelar();
         }
         this.carregar();
@@ -153,7 +167,7 @@ export class Despesas {
       resumo: this.service.resumo(this.periodo),
     }).subscribe({
       next: ({ despesas, resumo }) => {
-        this.despesas.set(despesas);
+        this.vencimentos.set(despesas);
         this.resumo.set(resumo);
       },
       error: (e: HttpErrorResponse) => this.erro.set(this.mensagemDeErro(e)),

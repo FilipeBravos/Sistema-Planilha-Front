@@ -3,18 +3,18 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from './api.config';
 import { Periodo } from './format';
-import { CategoriaDespesa, Despesa, DespesaRequest, DespesaResumo } from './models';
+import { CategoriaDespesa, Despesa, DespesaRequest, DespesaResumo, Vencimento } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class DespesaService {
   private readonly http = inject(HttpClient);
 
-  listar(categoria: CategoriaDespesa | null, periodo: Periodo): Observable<Despesa[]> {
+  listar(categoria: CategoriaDespesa | null, periodo: Periodo): Observable<Vencimento[]> {
     let params = this.params(periodo);
     if (categoria) {
       params = params.set('categoria', categoria);
     }
-    return this.http.get<Despesa[]>(`${API_URL}/despesas`, { params });
+    return this.http.get<Vencimento[]>(`${API_URL}/despesas`, { params });
   }
 
   resumo(periodo: Periodo): Observable<DespesaResumo> {

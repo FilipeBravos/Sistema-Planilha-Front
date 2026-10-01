@@ -35,6 +35,72 @@
   color: #fff;
 }
 
+.dica {
+  margin: -8px 0 16px;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+.formulario {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+  border-top: 3px solid #86efac;
+  padding: 12px 16px 14px;
+  margin-bottom: 16px;
+}
+.formulario.editando {
+  border-top-color: #facc15;
+  background: #fffef0;
+}
+.formulario h2 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+}
+.campos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+.campos label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: #4b5563;
+  min-width: 150px;
+}
+.campos label.largo {
+  flex: 1 1 260px;
+}
+.campos label.curto {
+  min-width: 80px;
+  width: 90px;
+}
+.botoes {
+  display: flex;
+  gap: 8px;
+}
+.botoes button {
+  height: 32px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+.botoes button.primario {
+  background: #059669;
+  border-color: #059669;
+  color: #fff;
+}
+.previa {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: #065f46;
+  font-weight: 600;
+}
 .titulo {
   margin: 0 0 8px;
   font-size: 1rem;
@@ -42,8 +108,9 @@
 .erro {
   background: #fee2e2;
   color: #991b1b;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 6px;
+  margin: 10px 0 0;
 }
 
 .tabela-wrap {
@@ -73,7 +140,8 @@ th {
 .c-data { width: 130px; }
 .c-categoria { width: 170px; }
 .c-forma { width: 150px; }
-.c-parcelas { width: 90px; }
+.c-parcela { width: 90px; }
+.c-compra { width: 220px; }
 .c-valor { width: 120px; }
 .c-acoes { width: 70px; }
 .num {
@@ -83,21 +151,17 @@ th {
 th.c-valor {
   text-align: right;
 }
-.editando {
+tr.editando {
   background: #fef9c3;
+}
+.compra {
+  color: #4b5563;
+  font-size: 0.8rem;
 }
 .vazio {
   text-align: center;
   color: #6b7280;
   padding: 24px;
-}
-tfoot .entrada td {
-  background: #f0fdf4;
-  border-top: 2px solid #86efac;
-}
-.calc {
-  color: #4b5563;
-  font-style: italic;
 }
 input,
 select {
@@ -109,9 +173,6 @@ select {
   border-radius: 4px;
   font: inherit;
   background: #fff;
-}
-input:disabled {
-  background: #f3f4f6;
 }
 input[type='number'] {
   text-align: right;
@@ -130,11 +191,6 @@ button.icone {
   cursor: pointer;
   font: inherit;
   line-height: 1;
-}
-button.primario {
-  background: #059669;
-  border-color: #059669;
-  color: #fff;
 }
 button.perigo {
   color: #b91c1c;

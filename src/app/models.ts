@@ -70,3 +70,17 @@ export interface DespesaResumo {
   total: number;
   porCategoria: { categoria: CategoriaDespesa; total: number }[];
 }
+
+/** Um pagamento a vencer (despesa fora do cartão = 1 vencimento; no cartão = 1 por parcela). */
+export interface Vencimento {
+  despesaId: number;
+  categoria: CategoriaDespesa;
+  nome: string;
+  formaPagamento: FormaPagamento;
+  dataCompra: string;
+  valorTotal: number;
+  parcelas: number | null;
+  numeroParcela: number | null;
+  vencimento: string;
+  valor: number;
+}
