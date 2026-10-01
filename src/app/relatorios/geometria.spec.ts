@@ -73,4 +73,16 @@ describe('geometria dos gráficos', () => {
     const g = graficoReceitaSaidas([mes('2026-09', 0, 0, 0)]);
     expect(g.ticks.length).toBeGreaterThan(1);
   });
+
+  it('mostra todos os rótulos de mês com poucos meses e os espaça quando há muitos', () => {
+    const doze = Array.from({ length: 12 }, (_, i) => mes(`2026-${String(i + 1).padStart(2, '0')}`, 100, 50, 0));
+    expect(graficoReceitaSaidas(doze).colunas.every((c) => c.mostrarRotulo)).toBeTrue();
+
+    const muitos = Array.from({ length: 120 }, (_, i) => mes(`${2016 + Math.floor(i / 12)}-${String((i % 12) + 1).padStart(2, '0')}`, 100, 50, 0));
+    const colunas = graficoResultado(muitos).colunas;
+    const visiveis = colunas.filter((c) => c.mostrarRotulo).length;
+    expect(visiveis).toBeGreaterThan(5);
+    expect(visiveis).toBeLessThan(40);
+    expect(colunas[0].mostrarRotulo).toBeTrue();
+  });
 });

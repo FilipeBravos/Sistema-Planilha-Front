@@ -6,6 +6,7 @@ export const ALTURA = 300;
 const MARGEM = { esq: 64, dir: 12, topo: 14, base: 32 };
 const COLUNA_MAX = 24;
 const RAIO = 4;
+const LARGURA_ROTULO = 56; // espaço mínimo (em unidades do gráfico) para um rótulo de mês como "out/26"
 const FOLGA = 2; // espaço da cor da superfície entre segmentos que se tocam
 
 export interface Tick {
@@ -16,6 +17,8 @@ export interface Tick {
 export interface ColunaMes {
   indice: number;
   rotulo: string;
+  /** Com muitos meses os rótulos não cabem todos: mostra de tantos em tantos. */
+  mostrarRotulo: boolean;
   xCentro: number;
   hitX: number;
   hitLargura: number;
@@ -99,9 +102,11 @@ export function rotuloMesLongo(mes: string): string {
 function bandas(meses: MesRelatorio[]): ColunaMes[] {
   const largura = LARGURA - MARGEM.esq - MARGEM.dir;
   const faixa = largura / Math.max(meses.length, 1);
+  const passo = Math.max(1, Math.ceil(LARGURA_ROTULO / faixa));
   return meses.map((m, indice) => ({
     indice,
     rotulo: rotuloMesCurto(m.mes),
+    mostrarRotulo: indice % passo === 0,
     xCentro: MARGEM.esq + faixa * indice + faixa / 2,
     hitX: MARGEM.esq + faixa * indice,
     hitLargura: faixa,

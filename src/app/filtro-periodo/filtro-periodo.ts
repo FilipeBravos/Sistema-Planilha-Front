@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, output, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, output } from '@angular/core';
+import { FiltrosService } from '../filtros.service';
 import { ModoPeriodo, Periodo, calcularPeriodo, deIso, deslocar } from '../format';
 
 /** Seletor de período (semana, mês ou tudo) com navegação; emite o período a cada mudança. */
@@ -10,8 +11,10 @@ import { ModoPeriodo, Periodo, calcularPeriodo, deIso, deslocar } from '../forma
 export class FiltroPeriodo implements OnInit {
   readonly periodoChange = output<Periodo>();
 
-  protected readonly modo = signal<ModoPeriodo>('mes');
-  private readonly referencia = signal(new Date());
+  private readonly filtros = inject(FiltrosService);
+  // O período fica guardado no serviço: ao trocar de aba e voltar, continua o mesmo.
+  protected readonly modo = this.filtros.modo;
+  private readonly referencia = this.filtros.referencia;
   protected readonly periodo = computed(() => calcularPeriodo(this.modo(), this.referencia()));
 
   ngOnInit(): void {

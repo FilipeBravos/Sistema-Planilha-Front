@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { AtualizacaoService } from './atualizacao.service';
+import { FiltrosService } from './filtros.service';
 import { AlterarSenha } from './auth/alterar-senha';
 import { AuthService } from './auth/auth.service';
 import { Login } from './auth/login';
@@ -20,6 +21,7 @@ type Aba = 'uber' | 'despesas' | 'emprestimos' | 'relatorios';
 export class App implements OnInit {
   protected readonly auth = inject(AuthService);
   protected readonly atualizacao = inject(AtualizacaoService);
+  private readonly filtros = inject(FiltrosService);
   protected readonly aba = signal<Aba>('uber');
   protected readonly alterandoSenha = signal(false);
 
@@ -30,6 +32,7 @@ export class App implements OnInit {
   protected sair(): void {
     this.alterandoSenha.set(false);
     this.aba.set('uber');
+    this.filtros.reiniciar();
     this.auth.sair();
   }
 }

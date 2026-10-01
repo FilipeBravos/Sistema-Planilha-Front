@@ -32,6 +32,7 @@ O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automát
 - ✎ edita e ✕ remove a **compra inteira** (todas as parcelas), a partir de qualquer linha dela.
 - O nome aceita texto livre; ao digitar aparecem as sugestões da categoria (lista em `src/app/despesas/despesas-catalogo.ts`).
 - Usa o mesmo filtro de período (semana/mês/tudo) da aba Uber.
+- **O período é lembrado ao trocar de aba:** Uber e Despesas compartilham o mesmo período (se você está vendo setembro em uma, a outra também mostra setembro), e os Relatórios lembram o próprio intervalo. Ao sair do sistema, tudo volta ao padrão (mês atual).
 
 ## Aba Empréstimos
 - Onde foi pego: Romilda, Verônica, Banco do Brasil, Banco Itaú ou Terceiros (neste caso informa-se o nome de quem emprestou; nomes já usados aparecem como sugestão).
@@ -40,7 +41,7 @@ O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automát
 - Para registrar um novo pagamento, edite o empréstimo (✎) e atualize o "Valor pago".
 
 ## Aba Relatórios
-Painel consolidado, com período de 3 meses, 6 meses, 12 meses (padrão) ou ano atual:
+Painel consolidado. O período pode ser um botão pronto (3 meses, 6 meses, 12 meses — o padrão — ou ano atual) **ou qualquer intervalo de meses**, escolhido em "De [mês] [ano] até [mês] [ano]" (até 10 anos, inclusive meses antigos e futuros, que já têm parcelas previstas). Com muitos meses os rótulos do gráfico ficam espaçados; a tabela sempre mostra todos.
 - **Cartões:** receita (faturamento líquido), despesas, parcelas de empréstimos e resultado (receita − despesas − empréstimos) do período.
 - **Receita × saídas por mês:** uma coluna de receita ao lado de uma coluna empilhada de despesas + parcelas de empréstimos. Passe o mouse (ou use Tab) sobre um mês para ver todos os valores.
 - **Resultado do mês:** colunas para cima (sobrou) e para baixo (faltou).

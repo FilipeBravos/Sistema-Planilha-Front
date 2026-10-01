@@ -1,11 +1,39 @@
 <div class="filtro" role="group" aria-label="Período do relatório">
   @for (p of presets; track p.id) {
-    <button type="button" [class.ativo]="preset() === p.id" (click)="selecionar(p.id)">{{ p.rotulo }}</button>
+    <button type="button" [class.ativo]="intervalo().preset === p.id" (click)="selecionar(p.id)">{{ p.rotulo }}</button>
   }
   @if (relatorio(); as r) {
     <span class="intervalo">{{ rotuloMesLongo(r.meses[0].mes) }} a {{ rotuloMesLongo(r.meses[r.meses.length - 1].mes) }}</span>
   }
 </div>
+
+<div class="escolha" role="group" aria-label="Escolher os meses">
+  <span>De</span>
+  <select aria-label="Mês inicial" [ngModel]="intervalo().inicio.slice(5)" (ngModelChange)="mudarMesInicial($event)">
+    @for (m of meses; track m.valor) {
+      <option [value]="m.valor">{{ m.rotulo }}</option>
+    }
+  </select>
+  <select aria-label="Ano inicial" [ngModel]="intervalo().inicio.slice(0, 4)" (ngModelChange)="mudarAnoInicial($event)">
+    @for (a of anos; track a) {
+      <option [value]="a">{{ a }}</option>
+    }
+  </select>
+  <span>até</span>
+  <select aria-label="Mês final" [ngModel]="intervalo().fim.slice(5)" (ngModelChange)="mudarMesFinal($event)">
+    @for (m of meses; track m.valor) {
+      <option [value]="m.valor">{{ m.rotulo }}</option>
+    }
+  </select>
+  <select aria-label="Ano final" [ngModel]="intervalo().fim.slice(0, 4)" (ngModelChange)="mudarAnoFinal($event)">
+    @for (a of anos; track a) {
+      <option [value]="a">{{ a }}</option>
+    }
+  </select>
+</div>
+@if (erroIntervalo()) {
+  <p class="erro" role="alert">{{ erroIntervalo() }}</p>
+}
 
 @if (erro()) {
   <p class="erro" role="alert">{{ erro() }}</p>
@@ -69,7 +97,9 @@
                 @if (c.receita) { <path class="m-receita" [attr.d]="c.receita" /> }
                 @if (c.despesas) { <path class="m-despesas" [attr.d]="c.despesas" /> }
                 @if (c.emprestimos) { <path class="m-emprestimos" [attr.d]="c.emprestimos" /> }
-                <text class="eixo" [attr.x]="c.xCentro" [attr.y]="g.yBase + 18" text-anchor="middle">{{ c.rotulo }}</text>
+                @if (c.mostrarRotulo) {
+                  <text class="eixo" [attr.x]="c.xCentro" [attr.y]="g.yBase + 18" text-anchor="middle">{{ c.rotulo }}</text>
+                }
                 <rect
                   class="faixa"
                   [class.ativa]="dica()?.grafico === 'saidas' && dica()?.indice === c.indice"
@@ -113,7 +143,9 @@
                 @if (c.rotuloValor; as rv) {
                   <text class="valor-fim" [attr.x]="rv.x" [attr.y]="rv.y" text-anchor="middle">{{ r.meses[c.indice].resultado | currency: 'BRL' }}</text>
                 }
-                <text class="eixo" [attr.x]="c.xCentro" [attr.y]="altura - 14" text-anchor="middle">{{ c.rotulo }}</text>
+                @if (c.mostrarRotulo) {
+                  <text class="eixo" [attr.x]="c.xCentro" [attr.y]="altura - 14" text-anchor="middle">{{ c.rotulo }}</text>
+                }
                 <rect
                   class="faixa"
                   [class.ativa]="dica()?.grafico === 'resultado' && dica()?.indice === c.indice"
