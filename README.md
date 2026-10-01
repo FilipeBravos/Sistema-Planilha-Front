@@ -1,6 +1,6 @@
 # Sistema Planilha - Front
 
-Angular 20 (standalone components). Duas abas: **Uber** (planilha de ganhos diários de Vagner e Filipe) e **Despesas**.
+Angular 20 (standalone components). Três abas: **Uber** (planilha de ganhos diários de Vagner e Filipe), **Despesas** e **Empréstimos**.
 
 ## Executar
 Requer o backend rodando em `http://localhost:8080` (ver `Sistema-Planilha-Back`; URL em `src/app/api.config.ts`).
@@ -26,3 +26,9 @@ npm test
 - ✎ edita e ✕ remove a **compra inteira** (todas as parcelas), a partir de qualquer linha dela.
 - O nome aceita texto livre; ao digitar aparecem as sugestões da categoria (lista em `src/app/despesas/despesas-catalogo.ts`).
 - Usa o mesmo filtro de período (semana/mês/tudo) da aba Uber.
+
+## Aba Empréstimos
+- Onde foi pego: Romilda, Verônica, Banco do Brasil, Banco Itaú ou Terceiros (neste caso informa-se o nome de quem emprestou; nomes já usados aparecem como sugestão).
+- Campos: data, valor do empréstimo, vezes (em quantas parcelas foi dividido) e valor pago. A tabela mostra o valor de cada parcela, o saldo a pagar e a situação (% pago ou "Quitado").
+- Cartões no topo: total emprestado, total pago e saldo a pagar. Cada botão de origem mostra o saldo daquela origem e filtra a lista.
+- Para registrar um novo pagamento, edite o empréstimo (✎) e atualize o "Valor pago".

@@ -84,3 +84,28 @@ export interface Vencimento {
   vencimento: string;
   valor: number;
 }
+
+export type Credor = 'ROMILDA' | 'VERONICA' | 'BANCO_DO_BRASIL' | 'BANCO_ITAU' | 'TERCEIROS';
+
+export interface EmprestimoRequest {
+  credor: Credor;
+  nomeTerceiro: string | null;
+  data: string;
+  valor: number;
+  parcelas: number;
+  valorPago: number;
+}
+
+export interface Emprestimo extends EmprestimoRequest {
+  id: number;
+  valorParcela: number;
+  saldo: number;
+  quitado: boolean;
+}
+
+export interface EmprestimoResumo {
+  totalEmprestado: number;
+  totalPago: number;
+  saldo: number;
+  porCredor: { credor: Credor; emprestado: number; pago: number; saldo: number }[];
+}

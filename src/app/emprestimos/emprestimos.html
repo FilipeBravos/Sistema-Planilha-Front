@@ -1,0 +1,135 @@
+@if (resumo(); as s) {
+  <section class="resumo">
+    <div class="cartao">
+      <h2>Total emprestado</h2>
+      <p class="valor">{{ s.totalEmprestado | currency: 'BRL' }}</p>
+    </div>
+    <div class="cartao">
+      <h2>Total pago</h2>
+      <p class="valor">{{ s.totalPago | currency: 'BRL' }}</p>
+    </div>
+    <div class="cartao destaque">
+      <h2>Saldo a pagar</h2>
+      <p class="valor">{{ s.saldo | currency: 'BRL' }}</p>
+    </div>
+  </section>
+}
+
+<nav class="credores" aria-label="Origem do empréstimo">
+  <button type="button" class="credor" [class.ativo]="credorAtual() === null" (click)="selecionarCredor(null)">
+    <span class="nome">Todos</span>
+    <span class="saldo">Saldo {{ resumo()?.saldo ?? 0 | currency: 'BRL' }}</span>
+  </button>
+  @for (c of credores; track c.id) {
+    <button type="button" class="credor" [class.ativo]="credorAtual() === c.id" (click)="selecionarCredor(c.id)">
+      <span class="nome">{{ c.rotulo }}</span>
+      <span class="saldo">Saldo {{ totalDe(c.id).saldo | currency: 'BRL' }}</span>
+    </button>
+  }
+</nav>
+
+<section class="formulario" [class.editando]="editandoId() !== null">
+  <h2>{{ editandoId() === null ? 'Novo empréstimo' : 'Editando empréstimo' }}</h2>
+  <div class="campos">
+    <label>
+      <span>Data do empréstimo</span>
+      <input type="date" name="data" [(ngModel)]="form.data" />
+    </label>
+    <label>
+      <span>Onde foi pego</span>
+      <select name="credor" [(ngModel)]="form.credor">
+        <option value="">Escolha…</option>
+        @for (c of credores; track c.id) {
+          <option [value]="c.id">{{ c.rotulo }}</option>
+        }
+      </select>
+    </label>
+    @if (form.credor === 'TERCEIROS') {
+      <label class="largo">
+        <span>Nome de quem emprestou</span>
+        <input type="text" name="nomeTerceiro" list="terceiros" maxlength="120" placeholder="Nome" [(ngModel)]="form.nomeTerceiro" />
+        <datalist id="terceiros">
+          @for (nome of terceirosConhecidos(); track nome) {
+            <option [value]="nome"></option>
+          }
+        </datalist>
+      </label>
+    }
+    <label>
+      <span>Valor do empréstimo</span>
+      <input type="number" min="0" step="0.01" name="valor" placeholder="0,00" [(ngModel)]="form.valor" />
+    </label>
+    <label class="curto">
+      <span>Vezes</span>
+      <input type="number" min="1" max="600" step="1" name="parcelas" placeholder="Nº" [(ngModel)]="form.parcelas" />
+    </label>
+    <label>
+      <span>Valor pago</span>
+      <input type="number" min="0" step="0.01" name="valorPago" placeholder="0,00" [(ngModel)]="form.valorPago" />
+    </label>
+    <div class="botoes">
+      <button type="button" class="primario" (click)="salvar()">{{ editandoId() === null ? 'Adicionar' : 'Salvar' }}</button>
+      @if (editandoId() !== null) {
+        <button type="button" (click)="cancelar()">Cancelar</button>
+      }
+    </div>
+  </div>
+  @if (valorParcelaPrevia !== null) {
+    <p class="previa">
+      {{ form.parcelas }}x de {{ valorParcelaPrevia | currency: 'BRL' }}
+      @if (saldoPrevio !== null) {
+        — falta pagar {{ saldoPrevio | currency: 'BRL' }}
+      }
+    </p>
+  }
+  @if (erro()) {
+    <p class="erro" role="alert">{{ erro() }}</p>
+  }
+</section>
+
+<h2 class="titulo">{{ nomeCredorAtual() }}</h2>
+
+<div class="tabela-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="c-data">Data</th>
+        <th>Onde foi pego</th>
+        <th class="c-num">Valor</th>
+        <th class="c-parcelas">Vezes</th>
+        <th class="c-num">Pago</th>
+        <th class="c-num">Saldo</th>
+        <th class="c-situacao">Situação</th>
+        <th class="c-acoes"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (e of emprestimos(); track e.id) {
+        <tr [class.editando]="editandoId() === e.id">
+          <td>{{ formatarData(e.data) }}</td>
+          <td>{{ rotuloCredor(e.credor, e.nomeTerceiro) }}</td>
+          <td class="num">{{ e.valor | currency: 'BRL' }}</td>
+          <td>{{ e.parcelas }}x de {{ e.valorParcela | currency: 'BRL' }}</td>
+          <td class="num">{{ e.valorPago | currency: 'BRL' }}</td>
+          <td class="num">{{ e.saldo | currency: 'BRL' }}</td>
+          <td>
+            @if (e.quitado) {
+              <span class="selo">Quitado</span>
+            } @else {
+              <span class="progresso" [attr.aria-label]="percentualPago(e.valor, e.valorPago) + '% pago'">
+                <span class="barra" [style.width.%]="percentualPago(e.valor, e.valorPago)"></span>
+              </span>
+              <span class="pct">{{ percentualPago(e.valor, e.valorPago) }}%</span>
+            }
+          </td>
+          <td class="acoes">
+            <button type="button" class="icone" title="Editar" aria-label="Editar" (click)="editar(e)">✎</button>
+            <button type="button" class="icone perigo" title="Excluir" aria-label="Excluir" (click)="excluir(e)">✕</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="8" class="vazio">Nenhum empréstimo cadastrado. Use o formulário acima para adicionar.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
