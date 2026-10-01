@@ -1,0 +1,21 @@
+<main class="tela">
+  <form class="caixa" (ngSubmit)="entrar()" autocomplete="on">
+    <h1>Controle Financeiro</h1>
+    <p class="sub">Entre para continuar</p>
+
+    <label>
+      <span>Usuário</span>
+      <input type="text" name="usuario" [(ngModel)]="usuario" autocomplete="username" autocapitalize="none" autofocus />
+    </label>
+    <label>
+      <span>Senha</span>
+      <input type="password" name="senha" [(ngModel)]="senha" autocomplete="current-password" />
+    </label>
+
+    @if (erro()) {
+      <p class="erro" role="alert">{{ erro() }}</p>
+    }
+
+    <button type="submit" [disabled]="enviando()">{{ enviando() ? 'Entrando…' : 'Entrar' }}</button>
+  </form>
+</main>

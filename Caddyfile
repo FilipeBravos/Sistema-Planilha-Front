@@ -1,0 +1,29 @@
+# SITE_ADDRESS: seu domínio (ex.: planilha.seudominio.com.br) => HTTPS automático.
+# Sem a variável, atende em http na porta 80 (útil só para teste).
+{$SITE_ADDRESS::80} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	# A API fica no mesmo endereço do site (sem CORS; o cookie de login é do mesmo domínio).
+	handle /api/* {
+		reverse_proxy backend:8080
+	}
+
+	# O site Angular: qualquer outro caminho cai no index.html.
+	handle {
+		root * /srv
+		# Arquivos com hash no nome nunca mudam: cache longo. O resto (index.html) sempre revalida.
+		@com_hash path_regexp ^/.+-[A-Z0-9]{8}\.(js|css)$
+		header @com_hash Cache-Control "public, max-age=31536000, immutable"
+		@sem_hash not path_regexp ^/.+-[A-Z0-9]{8}\.(js|css)$
+		header @sem_hash Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+}

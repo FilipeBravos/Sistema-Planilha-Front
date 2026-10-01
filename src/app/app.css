@@ -3,9 +3,40 @@
   color: #fff;
   padding: 12px 12px 0;
 }
+.topo .linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 .topo h1 {
-  margin: 0 0 12px;
+  margin: 0;
   font-size: 1.25rem;
+}
+.conta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.85rem;
+}
+.usuario {
+  color: #d1d5db;
+}
+.link {
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+.carregando {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 48px;
 }
 .abas {
   display: flex;

@@ -3,12 +3,16 @@
 Angular 20 (standalone components). Quatro abas: **Uber** (planilha de ganhos diários de Vagner e Filipe), **Despesas**, **Empréstimos** e **Relatórios**.
 
 ## Executar
-Requer o backend rodando em `http://localhost:8080` (ver `Sistema-Planilha-Back`; URL em `src/app/api.config.ts`).
+Requer o backend rodando em `http://localhost:8080` (ver `Sistema-Planilha-Back`). O front chama a API em `/api` (`src/app/api.config.ts`); em desenvolvimento o `ng serve` repassa `/api` ao backend (`proxy.conf.json`).
 ```bash
 npm install
 npm start        # http://localhost:4200
 npm test
 ```
+Ao abrir, aparece a **tela de login** (usuários criados pelo backend, veja o README dele). Depois de entrar, o topo mostra o usuário, "Alterar senha" e "Sair". Se a sessão expirar, o sistema volta sozinho para o login.
+
+## Produção
+O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automático, repasse de `/api` ao backend, cache dos arquivos com hash). Passo a passo de publicação em `Sistema-Planilha-Back/DEPLOY.md`.
 
 ## Tela
 - Filtro de período (Semana de segunda a domingo / Mês / Tudo) com setas ‹ › e "Hoje"; os cartões e a planilha respeitam o período. Ao salvar um lançamento fora do período exibido, a tela pula para o período dele.

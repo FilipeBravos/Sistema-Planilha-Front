@@ -1,26 +1,43 @@
-<header class="topo">
-  <h1>Controle Financeiro</h1>
-  <nav class="abas">
-    <button type="button" class="aba" [class.ativa]="aba() === 'uber'" (click)="aba.set('uber')">Uber</button>
-    <button type="button" class="aba" [class.ativa]="aba() === 'despesas'" (click)="aba.set('despesas')">Despesas</button>
-    <button type="button" class="aba" [class.ativa]="aba() === 'emprestimos'" (click)="aba.set('emprestimos')">Empréstimos</button>
-    <button type="button" class="aba" [class.ativa]="aba() === 'relatorios'" (click)="aba.set('relatorios')">Relatórios</button>
-  </nav>
-</header>
+@if (auth.verificando()) {
+  <p class="carregando">Carregando…</p>
+} @else if (!auth.usuario()) {
+  <app-login />
+} @else {
+  <header class="topo">
+    <div class="linha">
+      <h1>Controle Financeiro</h1>
+      <div class="conta">
+        <span class="usuario">{{ auth.usuario() }}</span>
+        <button type="button" class="link" (click)="alterandoSenha.set(true)">Alterar senha</button>
+        <button type="button" class="link" (click)="sair()">Sair</button>
+      </div>
+    </div>
+    <nav class="abas">
+      <button type="button" class="aba" [class.ativa]="aba() === 'uber'" (click)="aba.set('uber')">Uber</button>
+      <button type="button" class="aba" [class.ativa]="aba() === 'despesas'" (click)="aba.set('despesas')">Despesas</button>
+      <button type="button" class="aba" [class.ativa]="aba() === 'emprestimos'" (click)="aba.set('emprestimos')">Empréstimos</button>
+      <button type="button" class="aba" [class.ativa]="aba() === 'relatorios'" (click)="aba.set('relatorios')">Relatórios</button>
+    </nav>
+  </header>
 
-<main>
-  @switch (aba()) {
-    @case ('uber') {
-      <app-planilha-uber />
+  <main>
+    @switch (aba()) {
+      @case ('uber') {
+        <app-planilha-uber />
+      }
+      @case ('despesas') {
+        <app-despesas />
+      }
+      @case ('emprestimos') {
+        <app-emprestimos />
+      }
+      @case ('relatorios') {
+        <app-relatorios />
+      }
     }
-    @case ('despesas') {
-      <app-despesas />
-    }
-    @case ('emprestimos') {
-      <app-emprestimos />
-    }
-    @case ('relatorios') {
-      <app-relatorios />
-    }
+  </main>
+
+  @if (alterandoSenha()) {
+    <app-alterar-senha (fechar)="alterandoSenha.set(false)" />
   }
-</main>
+}

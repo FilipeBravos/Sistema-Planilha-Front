@@ -1,4 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { AlterarSenha } from './auth/alterar-senha';
+import { AuthService } from './auth/auth.service';
+import { Login } from './auth/login';
 import { Despesas } from './despesas/despesas';
 import { Emprestimos } from './emprestimos/emprestimos';
 import { PlanilhaUber } from './planilha/planilha-uber';
@@ -8,10 +11,22 @@ type Aba = 'uber' | 'despesas' | 'emprestimos' | 'relatorios';
 
 @Component({
   selector: 'app-root',
-  imports: [PlanilhaUber, Despesas, Emprestimos, Relatorios],
+  imports: [PlanilhaUber, Despesas, Emprestimos, Relatorios, Login, AlterarSenha],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
+  protected readonly auth = inject(AuthService);
   protected readonly aba = signal<Aba>('uber');
+  protected readonly alterandoSenha = signal(false);
+
+  ngOnInit(): void {
+    this.auth.iniciar();
+  }
+
+  protected sair(): void {
+    this.alterandoSenha.set(false);
+    this.aba.set('uber');
+    this.auth.sair();
+  }
 }
