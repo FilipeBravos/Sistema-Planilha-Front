@@ -1,0 +1,346 @@
+:host {
+  --superficie: #fcfcfb;
+  --texto: #0b0b0b;
+  --texto-2: #52514e;
+  --mudo: #898781;
+  --grade: #e1e0d9;
+  --eixo: #c3c2b7;
+  --receita: #2a78d6;
+  --despesas: #eb6834;
+  --emprestimos: #1baf7a;
+  --sobrou: #2a78d6;
+  --faltou: #e34948;
+  --bom: #006300;
+  --ruim: #d03b3b;
+  --neutro-barra: #c3c2b7;
+  display: block;
+  color: var(--texto);
+}
+
+.filtro {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-bottom: 14px;
+}
+.filtro button {
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+  margin-left: -1px;
+}
+.filtro button:first-child {
+  margin-left: 0;
+  border-radius: 6px 0 0 6px;
+}
+.filtro button:nth-child(4) {
+  border-radius: 0 6px 6px 0;
+}
+.filtro button.ativo {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: #fff;
+}
+.intervalo {
+  margin-left: 16px;
+  color: var(--texto-2);
+  font-size: 0.85rem;
+}
+
+.erro {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+.vazio {
+  color: #6b7280;
+  text-align: center;
+  padding: 24px;
+}
+
+/* Recarregar mantém o quadro anterior, só esmaecido. */
+.painel {
+  transition: opacity 0.15s;
+}
+.painel.carregando {
+  opacity: 0.55;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.tile {
+  background: var(--superficie);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 0 0 1px rgb(11 11 11 / 10%);
+}
+.tile h2 {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-2);
+  font-weight: 600;
+}
+.tile .valor {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.tile .valor.bom {
+  color: var(--bom);
+}
+.tile .valor.ruim {
+  color: var(--ruim);
+}
+.tile .sub {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  color: var(--mudo);
+}
+
+.cartao {
+  background: var(--superficie);
+  border-radius: 8px;
+  padding: 14px 16px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 0 1px rgb(11 11 11 / 10%);
+}
+.cartao header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-bottom: 8px;
+}
+.cartao h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.cartao h3 {
+  margin: 12px 0 8px;
+  font-size: 0.8rem;
+  color: var(--texto-2);
+  font-weight: 600;
+}
+
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: var(--texto-2);
+}
+.legenda li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chave {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+.chave.receita { background: var(--receita); }
+.chave.despesas { background: var(--despesas); }
+.chave.emprestimos { background: var(--emprestimos); }
+.chave.sobrou { background: var(--sobrou); }
+.chave.faltou { background: var(--faltou); }
+
+/* Gráficos SVG */
+.grafico {
+  position: relative;
+}
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.grade {
+  stroke: var(--grade);
+  stroke-width: 1;
+}
+.base {
+  stroke: var(--eixo);
+  stroke-width: 1;
+}
+.eixo {
+  fill: var(--mudo);
+  font-size: 11px;
+}
+.valor-fim {
+  fill: var(--texto);
+  font-size: 11px;
+  font-weight: 600;
+}
+.m-receita { fill: var(--receita); }
+.m-despesas { fill: var(--despesas); }
+.m-emprestimos { fill: var(--emprestimos); }
+.m-sobrou { fill: var(--sobrou); }
+.m-faltou { fill: var(--faltou); }
+.faixa {
+  fill: transparent;
+  outline: none;
+}
+.faixa:hover,
+.faixa.ativa {
+  fill: rgb(11 11 11 / 5%);
+}
+.faixa:focus-visible {
+  stroke: var(--texto-2);
+  stroke-width: 1.5;
+}
+
+.balao {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 12px));
+  min-width: 190px;
+  padding: 10px 12px;
+  background: var(--superficie);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgb(11 11 11 / 12%),
+    0 6px 18px rgb(11 11 11 / 14%);
+  pointer-events: none;
+  z-index: 2;
+}
+.balao p {
+  margin: 0;
+}
+.balao .titulo {
+  font-size: 0.78rem;
+  color: var(--texto-2);
+  margin-bottom: 6px;
+}
+.balao .linha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  padding: 2px 0;
+}
+.balao .linha strong {
+  min-width: 92px;
+  font-variant-numeric: tabular-nums;
+}
+.balao .linha span:last-child {
+  color: var(--texto-2);
+}
+.balao .linha.resultado {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--grade);
+}
+.balao .linha.resultado strong {
+  margin-left: 18px;
+}
+
+/* Rankings: destaque no maior, resto em cinza. */
+.destaque-texto {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  color: var(--texto-2);
+}
+.destaque-texto strong {
+  color: var(--texto);
+}
+.rankings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 8px 32px;
+}
+.ranking {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ranking li {
+  display: grid;
+  grid-template-columns: minmax(110px, 190px) 1fr minmax(120px, auto);
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 0.82rem;
+}
+.ranking .nome small {
+  display: block;
+  color: var(--mudo);
+  font-size: 0.7rem;
+}
+.ranking .trilho {
+  display: block;
+  height: 14px;
+}
+.ranking .barra {
+  display: block;
+  height: 14px;
+  background: var(--neutro-barra);
+  border-radius: 0 4px 4px 0;
+}
+.ranking li.primeiro .barra {
+  background: var(--despesas);
+}
+.ranking .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ranking li.primeiro .nome,
+.ranking li.primeiro .num {
+  font-weight: 600;
+}
+
+/* Tabela (versão em números dos gráficos) */
+.tabela-wrap {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+th,
+td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--grade);
+  text-align: left;
+  white-space: nowrap;
+}
+th {
+  font-size: 0.75rem;
+  color: var(--texto-2);
+  font-weight: 600;
+}
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+td.ruim {
+  color: var(--ruim);
+}
+tfoot td {
+  font-weight: 600;
+  border-top: 2px solid var(--eixo);
+  border-bottom: 0;
+}
+.nota {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--mudo);
+}

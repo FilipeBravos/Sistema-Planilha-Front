@@ -21,3 +21,39 @@ describe('format', () => {
     expect(formatarData('2026-09-28')).toBe('28/09/2026');
   });
 });
+
+import { calcularPeriodo, deslocar, deIso } from '../format';
+
+describe('período', () => {
+  it('semana vai de segunda a domingo', () => {
+    // 30/09/2026 é quarta-feira
+    const p = calcularPeriodo('semana', deIso('2026-09-30'));
+    expect(p.inicio).toBe('2026-09-28');
+    expect(p.fim).toBe('2026-10-04');
+    expect(p.rotulo).toBe('28/09 a 04/10/2026');
+  });
+
+  it('domingo pertence à semana que começou na segunda anterior', () => {
+    const p = calcularPeriodo('semana', deIso('2026-10-04'));
+    expect(p.inicio).toBe('2026-09-28');
+  });
+
+  it('mês cobre do dia 1 ao último dia', () => {
+    const p = calcularPeriodo('mes', deIso('2026-02-10'));
+    expect(p.inicio).toBe('2026-02-01');
+    expect(p.fim).toBe('2026-02-28');
+    expect(p.rotulo).toBe('Fevereiro de 2026');
+  });
+
+  it('tudo não tem limites', () => {
+    const p = calcularPeriodo('tudo', new Date());
+    expect(p.inicio).toBeNull();
+    expect(p.fim).toBeNull();
+  });
+
+  it('desloca semana e mês', () => {
+    expect(calcularPeriodo('semana', deslocar('semana', deIso('2026-09-30'), 1)).inicio).toBe('2026-10-05');
+    expect(calcularPeriodo('mes', deslocar('mes', deIso('2026-01-31'), 1)).inicio).toBe('2026-02-01');
+    expect(calcularPeriodo('mes', deslocar('mes', deIso('2026-01-15'), -1)).inicio).toBe('2025-12-01');
+  });
+});

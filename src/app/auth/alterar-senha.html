@@ -1,0 +1,29 @@
+<div class="fundo" (click)="fechar.emit()" role="presentation">
+  <form class="caixa" (click)="$event.stopPropagation()" (ngSubmit)="salvar()" role="dialog" aria-label="Alterar senha">
+    <h2>Alterar senha</h2>
+    @if (concluido()) {
+      <p class="ok">Senha alterada com sucesso.</p>
+      <button type="button" class="primario" (click)="fechar.emit()">Fechar</button>
+    } @else {
+      <label>
+        <span>Senha atual</span>
+        <input type="password" name="atual" [(ngModel)]="atual" autocomplete="current-password" />
+      </label>
+      <label>
+        <span>Nova senha (mínimo 8 caracteres)</span>
+        <input type="password" name="nova" [(ngModel)]="nova" autocomplete="new-password" />
+      </label>
+      <label>
+        <span>Repita a nova senha</span>
+        <input type="password" name="confirmacao" [(ngModel)]="confirmacao" autocomplete="new-password" />
+      </label>
+      @if (erro()) {
+        <p class="erro" role="alert">{{ erro() }}</p>
+      }
+      <div class="botoes">
+        <button type="button" (click)="fechar.emit()">Cancelar</button>
+        <button type="submit" class="primario" [disabled]="enviando()">Salvar</button>
+      </div>
+    }
+  </form>
+</div>

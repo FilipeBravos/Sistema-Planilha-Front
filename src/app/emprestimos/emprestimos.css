@@ -1,0 +1,240 @@
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.cartao {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
+.cartao h2 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+.cartao .valor {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.cartao.destaque .valor {
+  color: #b45309;
+}
+.credores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.credor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 120px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.credor .nome {
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+.credor .saldo {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.credor.ativo {
+  background: #1f2937;
+  border-color: #1f2937;
+}
+.credor.ativo .nome,
+.credor.ativo .saldo {
+  color: #fff;
+}
+
+.formulario {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+  border-top: 3px solid #86efac;
+  padding: 12px 16px 14px;
+  margin-bottom: 16px;
+}
+.formulario.editando {
+  border-top-color: #facc15;
+  background: #fffef0;
+}
+.formulario h2 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+}
+.campos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+.campos label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: #4b5563;
+  min-width: 150px;
+}
+.campos label.largo {
+  flex: 1 1 260px;
+}
+.campos label.curto {
+  min-width: 80px;
+  width: 90px;
+}
+.botoes {
+  display: flex;
+  gap: 8px;
+}
+.botoes button {
+  height: 32px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+.botoes button.primario {
+  background: #059669;
+  border-color: #059669;
+  color: #fff;
+}
+.previa {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: #065f46;
+  font-weight: 600;
+}
+.titulo {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.erro {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 10px 0 0;
+}
+
+.tabela-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 900px;
+  font-size: 0.85rem;
+}
+th,
+td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  white-space: nowrap;
+}
+th {
+  background: #f9fafb;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+.c-data { width: 130px; }
+.c-categoria { width: 170px; }
+.c-forma { width: 150px; }
+
+.c-valor { width: 120px; }
+.c-acoes { width: 70px; }
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+tr.editando {
+  background: #fef9c3;
+}
+.vazio {
+  text-align: center;
+  color: #6b7280;
+  padding: 24px;
+}
+input,
+select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 5px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font: inherit;
+  background: #fff;
+}
+input[type='number'] {
+  text-align: right;
+}
+.acoes {
+  text-align: center;
+}
+button.icone {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0 1px;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+}
+button.perigo {
+  color: #b91c1c;
+}
+
+.selo {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #d1fae5;
+  color: #065f46;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.progresso {
+  display: inline-block;
+  width: 80px;
+  height: 8px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.barra {
+  display: block;
+  height: 100%;
+  background: #f59e0b;
+}
+.pct {
+  margin-left: 6px;
+  font-size: 0.8rem;
+  color: #4b5563;
+}

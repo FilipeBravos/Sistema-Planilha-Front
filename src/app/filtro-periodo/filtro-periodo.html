@@ -1,0 +1,17 @@
+<div class="filtro">
+  <div class="modos" role="group" aria-label="Período">
+    <button type="button" [class.ativo]="modo() === 'semana'" (click)="mudarModo('semana')">Semana</button>
+    <button type="button" [class.ativo]="modo() === 'mes'" (click)="mudarModo('mes')">Mês</button>
+    <button type="button" [class.ativo]="modo() === 'tudo'" (click)="mudarModo('tudo')">Tudo</button>
+  </div>
+  @if (modo() !== 'tudo') {
+    <div class="navegacao">
+      <button type="button" aria-label="Período anterior" title="Anterior" (click)="navegar(-1)">‹</button>
+      <span class="rotulo">{{ periodo().rotulo }}</span>
+      <button type="button" aria-label="Próximo período" title="Próximo" (click)="navegar(1)">›</button>
+      <button type="button" class="hoje" (click)="hoje()">Hoje</button>
+    </div>
+  } @else {
+    <span class="rotulo">{{ periodo().rotulo }}</span>
+  }
+</div>

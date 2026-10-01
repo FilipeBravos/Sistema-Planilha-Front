@@ -1,0 +1,115 @@
+<app-filtro-periodo (periodoChange)="aoMudarPeriodo($event)" />
+
+<nav class="categorias" aria-label="Categorias de despesa">
+  <button type="button" class="categoria" [class.ativa]="categoriaAtual() === null" (click)="selecionarCategoria(null)">
+    <span class="nome">Todas</span>
+    <span class="total">{{ resumo()?.total ?? 0 | currency: 'BRL' }}</span>
+  </button>
+  @for (c of categorias; track c.id) {
+    <button type="button" class="categoria" [class.ativa]="categoriaAtual() === c.id" (click)="selecionarCategoria(c.id)">
+      <span class="nome">{{ c.rotulo }}</span>
+      <span class="total">{{ totalDe(c.id) | currency: 'BRL' }}</span>
+    </button>
+  }
+</nav>
+<p class="dica">Os totais são o que vence no período: no cartão, cada parcela entra no mês do seu vencimento.</p>
+
+<section class="formulario" [class.editando]="editandoId() !== null">
+  <h2>{{ editandoId() === null ? 'Nova despesa' : 'Editando despesa' }}</h2>
+  <div class="campos">
+    <label>
+      <span>Data da compra</span>
+      <input type="date" name="data" [(ngModel)]="form.data" />
+    </label>
+    <label>
+      <span>Categoria</span>
+      <select name="categoria" [(ngModel)]="form.categoria">
+        <option value="">Escolha…</option>
+        @for (c of categorias; track c.id) {
+          <option [value]="c.id">{{ c.rotulo }}</option>
+        }
+      </select>
+    </label>
+    <label class="largo">
+      <span>Despesa</span>
+      <input type="text" name="nome" list="sugestoes-nome" maxlength="120" placeholder="Nome da despesa" [(ngModel)]="form.nome" />
+      <datalist id="sugestoes-nome">
+        @for (item of sugestoesDoFormulario(); track item) {
+          <option [value]="item"></option>
+        }
+      </datalist>
+    </label>
+    <label>
+      <span>Forma de pagamento</span>
+      <select name="formaPagamento" [(ngModel)]="form.formaPagamento" (ngModelChange)="mudouForma()">
+        @for (f of formas; track f.id) {
+          <option [value]="f.id">{{ f.rotulo }}</option>
+        }
+      </select>
+    </label>
+    @if (ehCartao) {
+      <label class="curto">
+        <span>Parcelas</span>
+        <input type="number" min="1" max="60" step="1" name="parcelas" placeholder="Nº" [(ngModel)]="form.parcelas" />
+      </label>
+    }
+    <label>
+      <span>{{ ehCartao ? 'Valor total' : 'Valor' }}</span>
+      <input type="number" min="0" step="0.01" name="valor" placeholder="0,00" [(ngModel)]="form.valor" />
+    </label>
+    <div class="botoes">
+      <button type="button" class="primario" (click)="salvar()">{{ editandoId() === null ? 'Adicionar' : 'Salvar' }}</button>
+      @if (editandoId() !== null) {
+        <button type="button" (click)="cancelar()">Cancelar</button>
+      }
+    </div>
+  </div>
+  @if (previaParcelas) {
+    <p class="previa">{{ previaParcelas }}</p>
+  }
+  @if (erro()) {
+    <p class="erro" role="alert">{{ erro() }}</p>
+  }
+</section>
+
+<h2 class="titulo">{{ nomeCategoriaAtual() }}</h2>
+
+<div class="tabela-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="c-data">Vencimento</th>
+        @if (categoriaAtual() === null) {
+          <th class="c-categoria">Categoria</th>
+        }
+        <th>Despesa</th>
+        <th class="c-forma">Forma de pagamento</th>
+        <th class="c-parcela">Parcela</th>
+        <th class="c-valor">Valor</th>
+        <th class="c-compra">Compra</th>
+        <th class="c-acoes"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (v of vencimentos(); track v.despesaId + '-' + (v.numeroParcela ?? 0)) {
+        <tr [class.editando]="editandoId() === v.despesaId">
+          <td>{{ formatarData(v.vencimento) }}</td>
+          @if (categoriaAtual() === null) {
+            <td>{{ rotuloCategoria(v.categoria) }}</td>
+          }
+          <td>{{ v.nome }}</td>
+          <td>{{ rotuloForma(v.formaPagamento) }}</td>
+          <td>{{ v.numeroParcela ? v.numeroParcela + '/' + v.parcelas : '—' }}</td>
+          <td class="num">{{ v.valor | currency: 'BRL' }}</td>
+          <td class="compra">{{ v.parcelas ? formatarData(v.dataCompra) + ' · ' + (v.valorTotal | currency: 'BRL') : '—' }}</td>
+          <td class="acoes">
+            <button type="button" class="icone" title="Editar a compra" aria-label="Editar" (click)="editar(v)">✎</button>
+            <button type="button" class="icone perigo" title="Excluir a compra" aria-label="Excluir" (click)="excluir(v)">✕</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td [attr.colspan]="categoriaAtual() === null ? 8 : 7" class="vazio">Nada vence neste período.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>

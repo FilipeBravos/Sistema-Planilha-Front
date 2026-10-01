@@ -1,0 +1,65 @@
+.tela {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.caixa {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px 24px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 15%);
+}
+h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+.sub {
+  margin: 4px 0 20px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+label {
+  display: block;
+  margin-bottom: 14px;
+}
+label span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font: inherit;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: #1f2937;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.erro {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 0.85rem;
+}
