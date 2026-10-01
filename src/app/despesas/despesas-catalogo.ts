@@ -40,7 +40,7 @@ export const CATEGORIAS: InfoCategoria[] = [
       'CORRENTES',
       'TROCA DE ÓLEO',
       'PNEU DIANTEIRO',
-      'PNEU TRAZEIRO',
+      'PNEU TRASEIRO',
       'MANUTENÇÃO MOTOR',
       'SEGURO',
       'DESPACHANTE',
@@ -69,7 +69,7 @@ export const CATEGORIAS: InfoCategoria[] = [
     itens: [
       'IRMÃOS MATTAR',
       'SUPERMERCADO',
-      'FRANCIS COSMÉSTICOS',
+      'FRANCIS COSMÉTICOS',
       'UK CALÇADOS',
       'AUTO ESCOLA',
       'LIVRARIA',
