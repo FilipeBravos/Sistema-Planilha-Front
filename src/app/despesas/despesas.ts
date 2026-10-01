@@ -1,8 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { DespesaService } from '../despesa.service';
 import { FiltroPeriodo } from '../filtro-periodo/filtro-periodo';
 import { Periodo, formatarData } from '../format';
@@ -31,6 +33,8 @@ function formularioVazio(categoria: CategoriaDespesa | '' = ''): FormularioDespe
 })
 export class Despesas {
   private readonly service = inject(DespesaService);
+  private readonly atualizacao = inject(AtualizacaoService);
+  private carga?: Subscription;
   private readonly filtro = viewChild.required(FiltroPeriodo);
   private periodo: Periodo = { inicio: null, fim: null, rotulo: '' };
 
@@ -52,6 +56,10 @@ export class Despesas {
     const c = this.categoriaAtual();
     return c ? rotuloCategoria(c) : 'Todas as categorias';
   });
+
+  constructor() {
+    this.atualizacao.pedido$.pipe(takeUntilDestroyed()).subscribe(() => this.carregar(true));
+  }
 
   protected totalDe(categoria: CategoriaDespesa): number {
     return this.resumo()?.porCategoria.find((c) => c.categoria === categoria)?.total ?? 0;
@@ -161,16 +169,26 @@ export class Despesas {
     return CATEGORIAS.find((c) => c.id === categoria)?.itens ?? [];
   }
 
-  private carregar(): void {
-    forkJoin({
+  /** `silencioso`: atualização automática; não mostra erros passageiros e não mexe no formulário. */
+  private carregar(silencioso = false): void {
+    this.carga?.unsubscribe(); // uma consulta antiga não pode sobrescrever uma mais nova
+    this.carga = forkJoin({
       despesas: this.service.listar(this.categoriaAtual(), this.periodo),
       resumo: this.service.resumo(this.periodo),
     }).subscribe({
       next: ({ despesas, resumo }) => {
-        this.vencimentos.set(despesas);
-        this.resumo.set(resumo);
+        definirSeMudou(this.vencimentos, despesas);
+        definirSeMudou(this.resumo, resumo);
+        if (this.erro() === MSG_SEM_CONEXAO) {
+          this.erro.set('');
+        }
+        this.atualizacao.registrar();
       },
-      error: (e: HttpErrorResponse) => this.erro.set(this.mensagemDeErro(e)),
+      error: (e: HttpErrorResponse) => {
+        if (!silencioso) {
+          this.erro.set(this.mensagemDeErro(e));
+        }
+      },
     });
   }
 
@@ -206,7 +224,7 @@ export class Despesas {
 
   private mensagemDeErro(e: HttpErrorResponse): string {
     if (e.status === 0) {
-      return 'Não foi possível conectar ao servidor (http://localhost:8080).';
+      return MSG_SEM_CONEXAO;
     }
     const erros = e.error?.erros as Record<string, string> | undefined;
     if (erros) {

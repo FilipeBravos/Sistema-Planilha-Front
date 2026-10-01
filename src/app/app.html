@@ -7,6 +7,9 @@
     <div class="linha">
       <h1>Controle Financeiro</h1>
       <div class="conta">
+        <button type="button" class="link" (click)="atualizacao.agora()" title="Atualizar agora (a tela se atualiza sozinha a cada 15 segundos)">
+          ↻ {{ atualizacao.ultima() ? 'Atualizado às ' + (atualizacao.ultima() | date: 'HH:mm:ss') : 'Atualizando…' }}
+        </button>
         <span class="usuario">{{ auth.usuario() }}</span>
         <button type="button" class="link" (click)="alterandoSenha.set(true)">Alterar senha</button>
         <button type="button" class="link" (click)="sair()">Sair</button>

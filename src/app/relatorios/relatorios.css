@@ -51,6 +51,25 @@
   font-size: 0.85rem;
 }
 
+.escolha {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -4px 0 14px;
+  font-size: 0.85rem;
+  color: var(--texto-2);
+}
+.escolha select {
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  color: var(--texto);
+}
+
 .erro {
   background: #fee2e2;
   color: #991b1b;
