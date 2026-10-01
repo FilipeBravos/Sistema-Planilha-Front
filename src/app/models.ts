@@ -37,3 +37,36 @@ export interface Resumo {
   liquidoTotal: number;
   kmTotal: number;
 }
+
+export type CategoriaDespesa =
+  | 'CARRO'
+  | 'ENERGIA_ELETRICA'
+  | 'MOTO'
+  | 'PLANO_DE_SAUDE'
+  | 'FARMACIA'
+  | 'LORD_E_AMORA'
+  | 'FILIPE'
+  | 'VAGNER'
+  | 'ROMILDA'
+  | 'INTERNET_E_TELEFONE';
+
+export type FormaPagamento = 'DINHEIRO' | 'CARTAO' | 'CHEQUE' | 'BOLETO';
+
+export interface DespesaRequest {
+  categoria: CategoriaDespesa;
+  nome: string;
+  data: string;
+  valor: number;
+  formaPagamento: FormaPagamento;
+  parcelas: number | null;
+}
+
+export interface Despesa extends DespesaRequest {
+  id: number;
+  valorParcela: number | null;
+}
+
+export interface DespesaResumo {
+  total: number;
+  porCategoria: { categoria: CategoriaDespesa; total: number }[];
+}

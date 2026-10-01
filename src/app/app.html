@@ -1,10 +1,18 @@
 <header class="topo">
   <h1>Controle Financeiro</h1>
   <nav class="abas">
-    <button type="button" class="aba ativa">Uber</button>
+    <button type="button" class="aba" [class.ativa]="aba() === 'uber'" (click)="aba.set('uber')">Uber</button>
+    <button type="button" class="aba" [class.ativa]="aba() === 'despesas'" (click)="aba.set('despesas')">Despesas</button>
   </nav>
 </header>
 
 <main>
-  <app-planilha-uber />
+  @switch (aba()) {
+    @case ('uber') {
+      <app-planilha-uber />
+    }
+    @case ('despesas') {
+      <app-despesas />
+    }
+  }
 </main>
