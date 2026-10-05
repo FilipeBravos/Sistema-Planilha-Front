@@ -135,3 +135,52 @@ export function completarHora(texto: string): string {
   }
   return texto;
 }
+
+/** 1234.5 -> "1.234,50" (sempre com vírgula e 2 casas, em qualquer navegador). */
+export function formatarValorBr(valor: number): string {
+  return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/**
+ * Lê um valor digitado em reais: "1.234,50", "1234,5", "200", "12.5" (ponto no fim = decimal) e "R$ 10,00".
+ * Com vírgula, os pontos antes dela são milhar. Sem vírgula, "12.5" é decimal e "1.234" é mil duzentos e trinta e quatro.
+ * Devolve null se estiver vazio ou não der para entender.
+ */
+export function lerValorBr(texto: string): number | null {
+  const t = texto.trim().replace(/^R\$\s*/i, '').replace(/\s/g, '');
+  if (!/\d/.test(t)) {
+    return null;
+  }
+  let inteira: string;
+  let decimal = '';
+  if (t.includes(',')) {
+    const partes = t.split(',');
+    if (partes.length !== 2 || !/^\d{0,2}$/.test(partes[1])) {
+      return null;
+    }
+    inteira = partes[0].replace(/\./g, '');
+    decimal = partes[1];
+  } else if (/^\d+\.\d{1,2}$/.test(t)) {
+    [inteira, decimal] = t.split('.');
+  } else {
+    inteira = t.replace(/\./g, '');
+  }
+  if (!/^\d*$/.test(inteira) || inteira.length > 10) {
+    return null;
+  }
+  return Number(`${inteira || '0'}.${decimal.padEnd(2, '0')}`);
+}
+
+/**
+ * Enquanto digita: só números, vírgula e pontos; uma única vírgula, com no máximo 2 casas depois dela.
+ * Os pontos são mantidos como digitados (milhar ou decimal): quem decide é `lerValorBr`, para que
+ * "2.500,00" nunca vire "2,50" no meio da digitação.
+ */
+export function limparValorDigitado(texto: string): string {
+  let t = texto.replace(/[^\d.,]/g, '');
+  const i = t.indexOf(',');
+  if (i >= 0) {
+    t = `${t.slice(0, i + 1)}${t.slice(i + 1).replace(/[^\d]/g, '').slice(0, 2)}`;
+  }
+  return t;
+}

@@ -126,10 +126,10 @@
         <td><input type="number" min="0" name="kmInicial" [(ngModel)]="form.kmInicial" aria-label="Km inicial" /></td>
         <td><input type="number" min="0" name="kmFinal" [(ngModel)]="form.kmFinal" aria-label="Km final" /></td>
         <td class="calc num">{{ totalKmPrevia }}</td>
-        <td><input type="number" min="0" step="0.01" name="cargaPostoVagner" [(ngModel)]="form.cargaPostoVagner" aria-label="Carga posto Vagner" /></td>
-        <td><input type="number" min="0" step="0.01" name="cargaPostoFilipe" [(ngModel)]="form.cargaPostoFilipe" aria-label="Carga posto Filipe" /></td>
-        <td><input type="number" min="0" step="0.01" name="valorVagner" [(ngModel)]="form.valorVagner" aria-label="Valor Vagner" /></td>
-        <td><input type="number" min="0" step="0.01" name="valorFilipe" [(ngModel)]="form.valorFilipe" aria-label="Valor Filipe" /></td>
+        <td><app-campo-valor nome="cargaPostoVagner" rotulo="Carga posto Vagner" [(ngModel)]="form.cargaPostoVagner" /></td>
+        <td><app-campo-valor nome="cargaPostoFilipe" rotulo="Carga posto Filipe" [(ngModel)]="form.cargaPostoFilipe" /></td>
+        <td><app-campo-valor nome="valorVagner" rotulo="Valor Vagner" [(ngModel)]="form.valorVagner" /></td>
+        <td><app-campo-valor nome="valorFilipe" rotulo="Valor Filipe" [(ngModel)]="form.valorFilipe" /></td>
         <td class="calc num">{{ liquidoVagnerPrevia | currency: 'BRL' }}</td>
         <td class="calc num">{{ liquidoFilipePrevia | currency: 'BRL' }}</td>
         <td class="acoes">

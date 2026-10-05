@@ -4,6 +4,7 @@ import { Component, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CampoData } from '../campo-data/campo-data';
+import { CampoValor } from '../campo-valor/campo-valor';
 import { CampoHora } from '../campo-hora/campo-hora';
 import { Subscription, forkJoin } from 'rxjs';
 import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
@@ -44,7 +45,7 @@ function formularioVazio(): FormularioRegistro {
 
 @Component({
   selector: 'app-planilha-uber',
-  imports: [FormsModule, CurrencyPipe, FiltroPeriodo, CampoData, CampoHora],
+  imports: [FormsModule, CurrencyPipe, FiltroPeriodo, CampoData, CampoHora, CampoValor],
   templateUrl: './planilha-uber.html',
   styleUrl: './planilha-uber.css',
 })

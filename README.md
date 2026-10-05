@@ -29,6 +29,8 @@ O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automát
 
 **Horas:** os campos de hora da aba Uber também são próprios, sempre em 24 h (`hh:mm`, de 00:00 a 23:59), sem AM/PM em nenhum navegador. Digite só os números (`0830` vira `08:30`; ao sair do campo, `830` vira `08:30` e `8` vira `08:00`). Turnos que viram a meia-noite (22:00 às 02:30) continuam somando certo. Veja `src/app/campo-hora/`.
 
+**Valores em R$:** os campos de valor (carga do posto e valores da aba Uber, valor das Despesas, valor e valor pago dos Empréstimos) usam vírgula (`0,00`) em qualquer navegador. Pode digitar `200`, `1234,5` ou `1.234,50`: com vírgula, os pontos são milhar; sem vírgula, `12.5` vale 12,50 e `1.234` vale 1.234,00. Ao sair do campo, o valor é formatado (`1.234,50`). Veja `src/app/campo-valor/`.
+
 ## Aba Despesas
 - Categorias: Carro, Energia elétrica, Moto, Plano de saúde, Farmácia, Despesas Lord e Amora, Despesas Filipe, Despesas Vagner, Despesas Romilda e Internet e Telefone. Cada botão mostra o total da categoria no período; "Todas" mostra o total geral.
 - Formulário "Nova despesa" no topo: data da compra, categoria, nome, forma de pagamento (Dinheiro, Cartão, Cheque ou Boleto), valor e, no cartão, o número de parcelas. Enquanto você preenche um cartão aparece a prévia (ex.: "3x de R$ 666,67 — vencem de 25/10/2026 a 25/12/2026").
