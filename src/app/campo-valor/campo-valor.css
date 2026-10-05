@@ -6,15 +6,11 @@ input {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  padding: 5px 1px;
+  padding: 5px 6px;
   border: 1px solid #d1d5db;
   border-radius: 4px;
   font: inherit;
   background: #fff;
   color: inherit;
-  text-align: center;
-}
-input.invalida {
-  border-color: #d03b3b;
-  background: #fff5f5;
+  text-align: right;
 }

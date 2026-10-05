@@ -1,0 +1,12 @@
+<input
+  type="text"
+  inputmode="decimal"
+  autocomplete="off"
+  maxlength="16"
+  placeholder="0,00"
+  [attr.name]="nome() || null"
+  [attr.aria-label]="rotulo()"
+  [value]="texto()"
+  (input)="digitou($event)"
+  (blur)="saiu($event)"
+/>

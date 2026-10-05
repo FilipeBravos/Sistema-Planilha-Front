@@ -4,6 +4,7 @@ import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CampoData } from '../campo-data/campo-data';
+import { CampoValor } from '../campo-valor/campo-valor';
 import { Subscription, forkJoin } from 'rxjs';
 import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { DespesaService } from '../despesa.service';
@@ -28,7 +29,7 @@ function formularioVazio(categoria: CategoriaDespesa | '' = ''): FormularioDespe
 
 @Component({
   selector: 'app-despesas',
-  imports: [FormsModule, CurrencyPipe, FiltroPeriodo, CampoData],
+  imports: [FormsModule, CurrencyPipe, FiltroPeriodo, CampoData, CampoValor],
   templateUrl: './despesas.html',
   styleUrl: './despesas.css',
 })

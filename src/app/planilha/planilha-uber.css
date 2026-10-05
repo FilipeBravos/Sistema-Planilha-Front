@@ -17,11 +17,12 @@
   letter-spacing: 0.04em;
   color: #6b7280;
 }
+/* Os totais passam para a linha de baixo quando não cabem (valores grandes). */
 dl {
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
 }
 dt {
   font-size: 0.8rem;
