@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { CampoData } from '../campo-data/campo-data';
 import { Subscription, forkJoin } from 'rxjs';
 import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { EmprestimoService } from '../emprestimo.service';
@@ -25,7 +26,7 @@ function formularioVazio(credor: Credor | '' = ''): FormularioEmprestimo {
 
 @Component({
   selector: 'app-emprestimos',
-  imports: [FormsModule, CurrencyPipe],
+  imports: [FormsModule, CurrencyPipe, CampoData],
   templateUrl: './emprestimos.html',
   styleUrl: './emprestimos.css',
 })
@@ -166,7 +167,7 @@ export class Emprestimos implements OnInit {
       return null;
     }
     if (!f.data) {
-      this.erro.set('Informe a data do empréstimo.');
+      this.erro.set('Informe a data do empréstimo (dd/mm/aaaa).');
       return null;
     }
     if (f.valor === null || f.valor <= 0) {

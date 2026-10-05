@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { CampoData } from '../campo-data/campo-data';
 import { Subscription, forkJoin } from 'rxjs';
 import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { Periodo, diaDaSemana, formatarData, formatarMinutos, hhmm, minutosEntre } from '../format';
@@ -42,7 +43,7 @@ function formularioVazio(): FormularioRegistro {
 
 @Component({
   selector: 'app-planilha-uber',
-  imports: [FormsModule, CurrencyPipe, FiltroPeriodo],
+  imports: [FormsModule, CurrencyPipe, FiltroPeriodo, CampoData],
   templateUrl: './planilha-uber.html',
   styleUrl: './planilha-uber.css',
 })
@@ -187,7 +188,7 @@ export class PlanilhaUber {
   private montarRequisicao(): RegistroRequest | null {
     const f = this.form;
     if (!f.data) {
-      this.erro.set('Preencha a data.');
+      this.erro.set('Preencha a data (dd/mm/aaaa).');
       return null;
     }
     if ((f.kmInicial ?? 0) < 0 || (f.kmFinal ?? 0) < 0) {

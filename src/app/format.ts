@@ -82,3 +82,32 @@ export function deslocar(modo: ModoPeriodo, ref: Date, sentido: 1 | -1): Date {
   }
   return new Date(ref.getFullYear(), ref.getMonth(), ref.getDate() + 7 * sentido, 12);
 }
+
+/** "2026-10-01" -> "01/10/2026"; vazio ou inválido -> "". */
+export function isoParaBr(iso: string | null | undefined): string {
+  return iso && /^\d{4}-\d{2}-\d{2}$/.test(iso) ? formatarData(iso) : '';
+}
+
+/** Vai pondo as barras enquanto a pessoa digita: "01102026" -> "01/10/2026" (aceita só números). */
+export function mascararData(texto: string): string {
+  const d = texto.replace(/\D/g, '').slice(0, 8);
+  if (d.length <= 2) {
+    return d;
+  }
+  return d.length <= 4 ? `${d.slice(0, 2)}/${d.slice(2)}` : `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`;
+}
+
+/** "01/10/2026" -> "2026-10-01". Devolve "" se estiver incompleta ou não for uma data real (ex.: 31/02/2026). */
+export function brParaIso(texto: string): string {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(texto);
+  if (!m) {
+    return '';
+  }
+  const [dia, mes, ano] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  if (ano < 1900 || ano > 2100) {
+    return '';
+  }
+  const d = new Date(Date.UTC(ano, mes - 1, dia));
+  const real = d.getUTCFullYear() === ano && d.getUTCMonth() === mes - 1 && d.getUTCDate() === dia;
+  return real ? `${m[3]}-${m[2]}-${m[1]}` : '';
+}

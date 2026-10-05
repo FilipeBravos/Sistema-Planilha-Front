@@ -115,7 +115,7 @@
     </tbody>
     <tfoot>
       <tr class="entrada">
-        <td><input type="date" name="data" [(ngModel)]="form.data" aria-label="Data" /></td>
+        <td><app-campo-data nome="data" rotulo="Data" [(ngModel)]="form.data" /></td>
         <td class="calc" [title]="diaSemanaPrevia">{{ abreviar(diaSemanaPrevia) }}</td>
         <td><input type="time" name="horaInicialVagner" [(ngModel)]="form.horaInicialVagner" aria-label="Hora inicial Vagner" /></td>
         <td><input type="time" name="horaFinalVagner" [(ngModel)]="form.horaFinalVagner" aria-label="Hora final Vagner" /></td>
