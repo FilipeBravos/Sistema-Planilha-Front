@@ -117,11 +117,11 @@
       <tr class="entrada">
         <td><app-campo-data nome="data" rotulo="Data" [(ngModel)]="form.data" /></td>
         <td class="calc" [title]="diaSemanaPrevia">{{ abreviar(diaSemanaPrevia) }}</td>
-        <td><input type="time" name="horaInicialVagner" [(ngModel)]="form.horaInicialVagner" aria-label="Hora inicial Vagner" /></td>
-        <td><input type="time" name="horaFinalVagner" [(ngModel)]="form.horaFinalVagner" aria-label="Hora final Vagner" /></td>
+        <td><app-campo-hora nome="horaInicialVagner" rotulo="Hora inicial Vagner" [(ngModel)]="form.horaInicialVagner" /></td>
+        <td><app-campo-hora nome="horaFinalVagner" rotulo="Hora final Vagner" [(ngModel)]="form.horaFinalVagner" /></td>
         <td class="calc total">{{ formatarMinutos(minutosVagnerPrevia) }}</td>
-        <td><input type="time" name="horaInicialFilipe" [(ngModel)]="form.horaInicialFilipe" aria-label="Hora inicial Filipe" /></td>
-        <td><input type="time" name="horaFinalFilipe" [(ngModel)]="form.horaFinalFilipe" aria-label="Hora final Filipe" /></td>
+        <td><app-campo-hora nome="horaInicialFilipe" rotulo="Hora inicial Filipe" [(ngModel)]="form.horaInicialFilipe" /></td>
+        <td><app-campo-hora nome="horaFinalFilipe" rotulo="Hora final Filipe" [(ngModel)]="form.horaFinalFilipe" /></td>
         <td class="calc total">{{ formatarMinutos(minutosFilipePrevia) }}</td>
         <td><input type="number" min="0" name="kmInicial" [(ngModel)]="form.kmInicial" aria-label="Km inicial" /></td>
         <td><input type="number" min="0" name="kmFinal" [(ngModel)]="form.kmFinal" aria-label="Km final" /></td>

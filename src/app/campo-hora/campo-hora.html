@@ -1,0 +1,15 @@
+<input
+  type="text"
+  inputmode="numeric"
+  autocomplete="off"
+  maxlength="5"
+  placeholder="hh:mm"
+  [attr.name]="nome() || null"
+  [attr.aria-label]="rotulo()"
+  [attr.aria-invalid]="invalida()"
+  [class.invalida]="invalida()"
+  [title]="invalida() ? 'Hora inválida (use 00:00 a 23:59)' : ''"
+  [value]="texto()"
+  (input)="digitou($event)"
+  (blur)="saiu($event)"
+/>
