@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.campo {
+  position: relative;
+  display: block;
+}
+input:not(.seletor) {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 5px 22px 5px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font: inherit;
+  background: #fff;
+  color: inherit;
+}
+input.invalida {
+  border-color: #d03b3b;
+  background: #fff5f5;
+}
+.calendario {
+  position: absolute;
+  top: 50%;
+  right: 3px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #6b7280;
+  cursor: pointer;
+}
+.calendario:hover {
+  color: #111827;
+}
+/* O calendário nativo só abre por aqui; o campo em si fica escondido. */
+.seletor {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}

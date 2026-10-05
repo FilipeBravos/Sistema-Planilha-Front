@@ -25,6 +25,10 @@ O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automát
 - A última linha (verde) é a de entrada: mostra os campos calculados ao vivo; o backend recalcula ao salvar.
   "Editar" carrega a linha nessa entrada; "Excluir" remove o lançamento.
 
+**Datas:** os campos de data (Uber, Despesas e Empréstimos) usam o formato `dd/mm/aaaa` em qualquer navegador (o campo de data nativo seguiria o idioma do navegador e poderia aparecer como mm/dd/yyyy). Dá para digitar só os números (`01102026` vira `01/10/2026`) ou usar o botão de calendário; datas inexistentes (como 31/02) ficam marcadas em vermelho. Veja `src/app/campo-data/`.
+
+**Horas:** os campos de hora da aba Uber também são próprios, sempre em 24 h (`hh:mm`, de 00:00 a 23:59), sem AM/PM em nenhum navegador. Digite só os números (`0830` vira `08:30`; ao sair do campo, `830` vira `08:30` e `8` vira `08:00`). Turnos que viram a meia-noite (22:00 às 02:30) continuam somando certo. Veja `src/app/campo-hora/`.
+
 ## Aba Despesas
 - Categorias: Carro, Energia elétrica, Moto, Plano de saúde, Farmácia, Despesas Lord e Amora, Despesas Filipe, Despesas Vagner, Despesas Romilda e Internet e Telefone. Cada botão mostra o total da categoria no período; "Todas" mostra o total geral.
 - Formulário "Nova despesa" no topo: data da compra, categoria, nome, forma de pagamento (Dinheiro, Cartão, Cheque ou Boleto), valor e, no cartão, o número de parcelas. Enquanto você preenche um cartão aparece a prévia (ex.: "3x de R$ 666,67 — vencem de 25/10/2026 a 25/12/2026").

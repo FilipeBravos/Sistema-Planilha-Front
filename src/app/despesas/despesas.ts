@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { CampoData } from '../campo-data/campo-data';
 import { Subscription, forkJoin } from 'rxjs';
 import { AtualizacaoService, MSG_SEM_CONEXAO, definirSeMudou } from '../atualizacao.service';
 import { DespesaService } from '../despesa.service';
@@ -27,7 +28,7 @@ function formularioVazio(categoria: CategoriaDespesa | '' = ''): FormularioDespe
 
 @Component({
   selector: 'app-despesas',
-  imports: [FormsModule, CurrencyPipe, FiltroPeriodo],
+  imports: [FormsModule, CurrencyPipe, FiltroPeriodo, CampoData],
   templateUrl: './despesas.html',
   styleUrl: './despesas.css',
 })
@@ -200,7 +201,7 @@ export class Despesas {
       return null;
     }
     if (!nome || !f.data) {
-      this.erro.set('Preencha a data e o nome da despesa.');
+      this.erro.set('Preencha a data (dd/mm/aaaa) e o nome da despesa.');
       return null;
     }
     if (f.valor === null || f.valor <= 0) {
