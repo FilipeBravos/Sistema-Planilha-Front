@@ -57,3 +57,59 @@ describe('período', () => {
     expect(calcularPeriodo('mes', deslocar('mes', deIso('2026-01-15'), -1)).inicio).toBe('2025-12-01');
   });
 });
+
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { PlanilhaUber } from './planilha-uber';
+
+describe('Uber: Km em branco', () => {
+  let http: HttpTestingController;
+  let componente: any;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    http = TestBed.inject(HttpTestingController);
+    const fixture = TestBed.createComponent(PlanilhaUber);
+    componente = fixture.componentInstance;
+    fixture.detectChanges(); // o filtro de período emite e a tela busca os dados
+    http.match((r) => r.url.endsWith('/registros') || r.url.endsWith('/resumo')).forEach((r) => r.flush(r.request.url.endsWith('/resumo') ? null : []));
+  });
+
+  function preencher(km: { ini: number | null; fim: number | null }): void {
+    componente.form = { ...componente.form, data: '2026-10-01', kmInicial: km.ini, kmFinal: km.fim };
+  }
+
+  it('o total de Km da pré-visualização fica em branco enquanto faltar um dos Km', () => {
+    preencher({ ini: null, fim: null });
+    expect(componente.totalKmPrevia).toBeNull();
+    preencher({ ini: 100, fim: null });
+    expect(componente.totalKmPrevia).toBeNull();
+    preencher({ ini: 100, fim: 160 });
+    expect(componente.totalKmPrevia).toBe(60);
+  });
+
+  it('salva sem Km, enviando em branco (null)', () => {
+    preencher({ ini: null, fim: null });
+    componente.salvar();
+
+    const req = http.expectOne((r) => r.method === 'POST' && r.url.endsWith('/registros'));
+    expect(req.request.body.kmInicial).toBeNull();
+    expect(req.request.body.kmFinal).toBeNull();
+    expect(componente.erro()).toBe('');
+    req.flush({});
+    http.match(() => true).forEach((r) => r.flush([]));
+  });
+
+  it('continua recusando Km final menor que o inicial e Km negativo', () => {
+    preencher({ ini: 200, fim: 100 });
+    componente.salvar();
+    expect(componente.erro()).toContain('Km final não pode ser menor');
+    http.expectNone((r) => r.method === 'POST');
+
+    preencher({ ini: -5, fim: null });
+    componente.salvar();
+    expect(componente.erro()).toContain('negativo');
+    http.expectNone((r) => r.method === 'POST');
+  });
+});

@@ -4,8 +4,9 @@ export interface RegistroRequest {
   horaFinalVagner: string | null;
   horaInicialFilipe: string | null;
   horaFinalFilipe: string | null;
-  kmInicial: number;
-  kmFinal: number;
+  /** Km é opcional: pode vir em branco (null). */
+  kmInicial: number | null;
+  kmFinal: number | null;
   cargaPostoVagner: number;
   cargaPostoFilipe: number;
   valorVagner: number;
@@ -18,7 +19,8 @@ export interface Registro extends RegistroRequest {
   totalMinutosVagner: number;
   totalMinutosFilipe: number;
   totalMinutos: number;
-  totalKm: number;
+  /** Só existe quando os dois Km foram informados. */
+  totalKm: number | null;
   liquidoVagner: number;
   liquidoFilipe: number;
 }

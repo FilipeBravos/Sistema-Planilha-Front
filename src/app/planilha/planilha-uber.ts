@@ -85,8 +85,10 @@ export class PlanilhaUber {
     return minutosEntre(this.form.horaInicialFilipe, this.form.horaFinalFilipe);
   }
 
-  protected get totalKmPrevia(): number {
-    return (this.form.kmFinal ?? 0) - (this.form.kmInicial ?? 0);
+  /** Em branco enquanto faltar o Km inicial ou o final. */
+  protected get totalKmPrevia(): number | null {
+    const { kmInicial, kmFinal } = this.form;
+    return kmInicial === null || kmFinal === null ? null : kmFinal - kmInicial;
   }
 
   protected get liquidoVagnerPrevia(): number {
@@ -184,11 +186,16 @@ export class PlanilhaUber {
 
   private montarRequisicao(): RegistroRequest | null {
     const f = this.form;
-    if (!f.data || f.kmInicial === null || f.kmFinal === null) {
-      this.erro.set('Preencha a data e o Km inicial/final.');
+    if (!f.data) {
+      this.erro.set('Preencha a data.');
       return null;
     }
-    if (f.kmFinal < f.kmInicial) {
+    if ((f.kmInicial ?? 0) < 0 || (f.kmFinal ?? 0) < 0) {
+      this.erro.set('Km não pode ser negativo.');
+      return null;
+    }
+    // Km é opcional; só confere a ordem quando os dois foram informados.
+    if (f.kmInicial !== null && f.kmFinal !== null && f.kmFinal < f.kmInicial) {
       this.erro.set('Km final não pode ser menor que o Km inicial.');
       return null;
     }
