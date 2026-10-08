@@ -76,38 +76,65 @@ describe('Uber: Km em branco', () => {
     http.match((r) => r.url.endsWith('/registros') || r.url.endsWith('/resumo')).forEach((r) => r.flush(r.request.url.endsWith('/resumo') ? null : []));
   });
 
-  function preencher(km: { ini: number | null; fim: number | null }): void {
-    componente.form = { ...componente.form, data: '2026-10-01', kmInicial: km.ini, kmFinal: km.fim };
+  type Km = { iniV?: number | null; fimV?: number | null; iniF?: number | null; fimF?: number | null };
+
+  function preencher(km: Km): void {
+    componente.form = {
+      ...componente.form,
+      data: '2026-10-01',
+      kmInicialVagner: km.iniV ?? null,
+      kmFinalVagner: km.fimV ?? null,
+      kmInicialFilipe: km.iniF ?? null,
+      kmFinalFilipe: km.fimF ?? null,
+    };
   }
 
-  it('o total de Km da pré-visualização fica em branco enquanto faltar um dos Km', () => {
-    preencher({ ini: null, fim: null });
-    expect(componente.totalKmPrevia).toBeNull();
-    preencher({ ini: 100, fim: null });
-    expect(componente.totalKmPrevia).toBeNull();
-    preencher({ ini: 100, fim: 160 });
+  it('o total de Km de cada pessoa fica em branco enquanto faltar um dos Km dela', () => {
+    preencher({});
+    expect(componente.totalKmVagnerPrevia).toBeNull();
+    expect(componente.totalKmFilipePrevia).toBeNull();
+    expect(componente.totalKmPrevia).toBe(0);
+    preencher({ iniV: 100, iniF: 10 });
+    expect(componente.totalKmVagnerPrevia).toBeNull();
+    preencher({ iniV: 100, fimV: 160 });
+    expect(componente.totalKmVagnerPrevia).toBe(60);
+    expect(componente.totalKmFilipePrevia).toBeNull();
     expect(componente.totalKmPrevia).toBe(60);
   });
 
+  it('o total do dia soma o Km do Vagner com o do Filipe', () => {
+    preencher({ iniV: 100, fimV: 160, iniF: 500, fimF: 530 });
+    expect(componente.totalKmVagnerPrevia).toBe(60);
+    expect(componente.totalKmFilipePrevia).toBe(30);
+    expect(componente.totalKmPrevia).toBe(90);
+  });
+
   it('salva sem Km, enviando em branco (null)', () => {
-    preencher({ ini: null, fim: null });
+    preencher({});
     componente.salvar();
 
     const req = http.expectOne((r) => r.method === 'POST' && r.url.endsWith('/registros'));
-    expect(req.request.body.kmInicial).toBeNull();
-    expect(req.request.body.kmFinal).toBeNull();
+    expect(req.request.body.kmInicialVagner).toBeNull();
+    expect(req.request.body.kmFinalVagner).toBeNull();
+    expect(req.request.body.kmInicialFilipe).toBeNull();
+    expect(req.request.body.kmFinalFilipe).toBeNull();
     expect(componente.erro()).toBe('');
     req.flush({});
     http.match(() => true).forEach((r) => r.flush([]));
   });
 
-  it('continua recusando Km final menor que o inicial e Km negativo', () => {
-    preencher({ ini: 200, fim: 100 });
+  it('continua recusando Km final menor que o inicial (por pessoa) e Km negativo', () => {
+    preencher({ iniV: 200, fimV: 100 });
     componente.salvar();
-    expect(componente.erro()).toContain('Km final não pode ser menor');
+    expect(componente.erro()).toContain('do Vagner');
     http.expectNone((r) => r.method === 'POST');
 
-    preencher({ ini: -5, fim: null });
+    preencher({ iniF: 200, fimF: 100 });
+    componente.salvar();
+    expect(componente.erro()).toContain('do Filipe');
+    http.expectNone((r) => r.method === 'POST');
+
+    preencher({ iniF: -5 });
     componente.salvar();
     expect(componente.erro()).toContain('negativo');
     http.expectNone((r) => r.method === 'POST');
