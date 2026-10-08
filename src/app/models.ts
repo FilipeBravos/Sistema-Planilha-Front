@@ -4,9 +4,11 @@ export interface RegistroRequest {
   horaFinalVagner: string | null;
   horaInicialFilipe: string | null;
   horaFinalFilipe: string | null;
-  /** Km é opcional: pode vir em branco (null). */
-  kmInicial: number | null;
-  kmFinal: number | null;
+  /** Km de cada pessoa é opcional: pode vir em branco (null). */
+  kmInicialVagner: number | null;
+  kmFinalVagner: number | null;
+  kmInicialFilipe: number | null;
+  kmFinalFilipe: number | null;
   cargaPostoVagner: number;
   cargaPostoFilipe: number;
   valorVagner: number;
@@ -19,8 +21,11 @@ export interface Registro extends RegistroRequest {
   totalMinutosVagner: number;
   totalMinutosFilipe: number;
   totalMinutos: number;
-  /** Só existe quando os dois Km foram informados. */
-  totalKm: number | null;
+  /** Só existe quando o Km inicial e o final da pessoa foram informados. */
+  totalKmVagner: number | null;
+  totalKmFilipe: number | null;
+  /** Km rodado pelos dois no dia. */
+  totalKm: number;
   liquidoVagner: number;
   liquidoFilipe: number;
 }
@@ -37,6 +42,8 @@ export interface Resumo {
   liquidoVagner: number;
   liquidoFilipe: number;
   liquidoTotal: number;
+  kmVagner: number;
+  kmFilipe: number;
   kmTotal: number;
 }
 

@@ -18,8 +18,8 @@ O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automát
 
 ## Tela
 - Filtro de período (Semana de segunda a domingo / Mês / Tudo) com setas ‹ › e "Hoje"; os cartões e a planilha respeitam o período. Ao salvar um lançamento fora do período exibido, a tela pula para o período dele.
-- Cartões no topo: horas e faturamento bruto/líquido (juntos e individual) e carga do posto discriminada por pessoa (sem somar).
-- Planilha: Data, Dia da semana, Hora inicial/final e Total de horas de cada pessoa (Vagner e Filipe; opcionais), Km inicial/final, Total de Km,
+- Cartões no topo: horas, Km rodados (cada um e o total) e faturamento bruto/líquido (juntos e individual) e carga do posto discriminada por pessoa (sem somar).
+- Planilha: Data, Dia da semana, Hora inicial/final, Total de horas e Km inicial/final/Total de Km de cada pessoa (Vagner e Filipe; opcionais), Km dos dois somados,
   R$ Carga Posto Vagner, R$ Carga Posto Filipe, Valor Vagner, Valor Filipe, Líquido Vagner, Líquido Filipe.
 - Cada pessoa informa a sua Carga Posto, descontada só do seu valor (Líquido = Valor − Carga Posto).
 - A última linha (verde) é a de entrada: mostra os campos calculados ao vivo; o backend recalcula ao salvar.

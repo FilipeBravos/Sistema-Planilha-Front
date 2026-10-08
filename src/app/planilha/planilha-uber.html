@@ -19,6 +19,14 @@
       </dl>
     </div>
     <div class="cartao">
+      <h2>Km rodados</h2>
+      <dl>
+        <div class="destaque"><dt>Total</dt><dd>{{ s.kmTotal }} km</dd></div>
+        <div><dt>Vagner</dt><dd>{{ s.kmVagner }} km</dd></div>
+        <div><dt>Filipe</dt><dd>{{ s.kmFilipe }} km</dd></div>
+      </dl>
+    </div>
+    <div class="cartao">
       <h2>Carga do posto</h2>
       <dl>
         <div><dt>Vagner</dt><dd>{{ s.cargaPostoVagner | currency: 'BRL' }}</dd></div>
@@ -43,34 +51,36 @@
 <div class="tabela-wrap">
   <table>
     <colgroup>
-      <col style="width: 8.5%" />
-      <col style="width: 3.5%" />
+      <col style="width: 6.3%" />
+      <col style="width: 3%" />
       <col style="width: 4.3%" />
       <col style="width: 4.3%" />
-      <col style="width: 4.3%" />
-      <col style="width: 4.3%" />
-      <col style="width: 4.3%" />
-      <col style="width: 4.3%" />
-      <col style="width: 4.2%" />
-      <col style="width: 4.2%" />
       <col style="width: 3.8%" />
-      <col style="width: 7.4%" />
-      <col style="width: 7.4%" />
-      <col style="width: 7.4%" />
-      <col style="width: 7.4%" />
-      <col style="width: 7.4%" />
-      <col style="width: 7.4%" />
-      <col style="width: 5.5%" />
+      <col style="width: 4.0%" />
+      <col style="width: 4.0%" />
+      <col style="width: 3.6%" />
+      <col style="width: 4.3%" />
+      <col style="width: 4.3%" />
+      <col style="width: 3.8%" />
+      <col style="width: 4.0%" />
+      <col style="width: 4.0%" />
+      <col style="width: 3.6%" />
+      <col style="width: 3.6%" />
+      <col style="width: 5.77%" />
+      <col style="width: 5.77%" />
+      <col style="width: 5.77%" />
+      <col style="width: 5.77%" />
+      <col style="width: 5.77%" />
+      <col style="width: 5.77%" />
+      <col style="width: 4.5%" />
     </colgroup>
     <thead>
       <tr>
         <th rowspan="2">Data</th>
         <th rowspan="2">Dia</th>
-        <th colspan="3" class="grupo">Vagner</th>
-        <th colspan="3" class="grupo">Filipe</th>
-        <th rowspan="2">Km inicial</th>
-        <th rowspan="2">Km final</th>
-        <th rowspan="2">Total de Km</th>
+        <th colspan="6" class="grupo">Vagner</th>
+        <th colspan="6" class="grupo">Filipe</th>
+        <th rowspan="2">Km dos dois</th>
         <th rowspan="2">R$ Carga Posto Vagner</th>
         <th rowspan="2">R$ Carga Posto Filipe</th>
         <th rowspan="2">Valor Vagner</th>
@@ -80,8 +90,10 @@
         <th rowspan="2"></th>
       </tr>
       <tr>
-        <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Total</th>
-        <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Total</th>
+        <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Horas</th>
+        <th class="sub">Km ini.</th><th class="sub">Km fim</th><th class="sub">Km</th>
+        <th class="sub">Início</th><th class="sub">Fim</th><th class="sub">Horas</th>
+        <th class="sub">Km ini.</th><th class="sub">Km fim</th><th class="sub">Km</th>
       </tr>
     </thead>
     <tbody>
@@ -92,12 +104,16 @@
           <td>{{ hhmm(r.horaInicialVagner) }}</td>
           <td>{{ hhmm(r.horaFinalVagner) }}</td>
           <td class="total">{{ formatarMinutos(r.totalMinutosVagner) }}</td>
+          <td class="num">{{ r.kmInicialVagner }}</td>
+          <td class="num">{{ r.kmFinalVagner }}</td>
+          <td class="num total">{{ r.totalKmVagner }}</td>
           <td>{{ hhmm(r.horaInicialFilipe) }}</td>
           <td>{{ hhmm(r.horaFinalFilipe) }}</td>
           <td class="total">{{ formatarMinutos(r.totalMinutosFilipe) }}</td>
-          <td class="num">{{ r.kmInicial }}</td>
-          <td class="num">{{ r.kmFinal }}</td>
-          <td class="num">{{ r.totalKm }}</td>
+          <td class="num">{{ r.kmInicialFilipe }}</td>
+          <td class="num">{{ r.kmFinalFilipe }}</td>
+          <td class="num total">{{ r.totalKmFilipe }}</td>
+          <td class="num total">{{ r.totalKm }}</td>
           <td class="num">{{ r.cargaPostoVagner | currency: 'BRL' }}</td>
           <td class="num">{{ r.cargaPostoFilipe | currency: 'BRL' }}</td>
           <td class="num">{{ r.valorVagner | currency: 'BRL' }}</td>
@@ -110,7 +126,7 @@
           </td>
         </tr>
       } @empty {
-        <tr><td colspan="17" class="vazio">Nenhum lançamento ainda. Use a linha abaixo para adicionar.</td></tr>
+        <tr><td colspan="22" class="vazio">Nenhum lançamento ainda. Use a linha abaixo para adicionar.</td></tr>
       }
     </tbody>
     <tfoot>
@@ -120,11 +136,15 @@
         <td><app-campo-hora nome="horaInicialVagner" rotulo="Hora inicial Vagner" [(ngModel)]="form.horaInicialVagner" /></td>
         <td><app-campo-hora nome="horaFinalVagner" rotulo="Hora final Vagner" [(ngModel)]="form.horaFinalVagner" /></td>
         <td class="calc total">{{ formatarMinutos(minutosVagnerPrevia) }}</td>
+        <td><input type="number" min="0" name="kmInicialVagner" [(ngModel)]="form.kmInicialVagner" aria-label="Km inicial Vagner" /></td>
+        <td><input type="number" min="0" name="kmFinalVagner" [(ngModel)]="form.kmFinalVagner" aria-label="Km final Vagner" /></td>
+        <td class="calc num">{{ totalKmVagnerPrevia }}</td>
         <td><app-campo-hora nome="horaInicialFilipe" rotulo="Hora inicial Filipe" [(ngModel)]="form.horaInicialFilipe" /></td>
         <td><app-campo-hora nome="horaFinalFilipe" rotulo="Hora final Filipe" [(ngModel)]="form.horaFinalFilipe" /></td>
         <td class="calc total">{{ formatarMinutos(minutosFilipePrevia) }}</td>
-        <td><input type="number" min="0" name="kmInicial" [(ngModel)]="form.kmInicial" aria-label="Km inicial" /></td>
-        <td><input type="number" min="0" name="kmFinal" [(ngModel)]="form.kmFinal" aria-label="Km final" /></td>
+        <td><input type="number" min="0" name="kmInicialFilipe" [(ngModel)]="form.kmInicialFilipe" aria-label="Km inicial Filipe" /></td>
+        <td><input type="number" min="0" name="kmFinalFilipe" [(ngModel)]="form.kmFinalFilipe" aria-label="Km final Filipe" /></td>
+        <td class="calc num">{{ totalKmFilipePrevia }}</td>
         <td class="calc num">{{ totalKmPrevia }}</td>
         <td><app-campo-valor nome="cargaPostoVagner" rotulo="Carga posto Vagner" [(ngModel)]="form.cargaPostoVagner" /></td>
         <td><app-campo-valor nome="cargaPostoFilipe" rotulo="Carga posto Filipe" [(ngModel)]="form.cargaPostoFilipe" /></td>

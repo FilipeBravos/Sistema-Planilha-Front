@@ -19,12 +19,18 @@ interface FormularioRegistro {
   horaFinalVagner: string;
   horaInicialFilipe: string;
   horaFinalFilipe: string;
-  kmInicial: number | null;
-  kmFinal: number | null;
+  kmInicialVagner: number | null;
+  kmFinalVagner: number | null;
+  kmInicialFilipe: number | null;
+  kmFinalFilipe: number | null;
   cargaPostoVagner: number | null;
   cargaPostoFilipe: number | null;
   valorVagner: number | null;
   valorFilipe: number | null;
+}
+
+function diferencaKm(inicial: number | null, final: number | null): number | null {
+  return inicial === null || final === null ? null : final - inicial;
 }
 
 function formularioVazio(): FormularioRegistro {
@@ -34,8 +40,10 @@ function formularioVazio(): FormularioRegistro {
     horaFinalVagner: '',
     horaInicialFilipe: '',
     horaFinalFilipe: '',
-    kmInicial: null,
-    kmFinal: null,
+    kmInicialVagner: null,
+    kmFinalVagner: null,
+    kmInicialFilipe: null,
+    kmFinalFilipe: null,
     cargaPostoVagner: null,
     cargaPostoFilipe: null,
     valorVagner: null,
@@ -88,10 +96,18 @@ export class PlanilhaUber {
     return minutosEntre(this.form.horaInicialFilipe, this.form.horaFinalFilipe);
   }
 
-  /** Em branco enquanto faltar o Km inicial ou o final. */
-  protected get totalKmPrevia(): number | null {
-    const { kmInicial, kmFinal } = this.form;
-    return kmInicial === null || kmFinal === null ? null : kmFinal - kmInicial;
+  /** Em branco enquanto faltar o Km inicial ou o final da pessoa. */
+  protected get totalKmVagnerPrevia(): number | null {
+    return diferencaKm(this.form.kmInicialVagner, this.form.kmFinalVagner);
+  }
+
+  protected get totalKmFilipePrevia(): number | null {
+    return diferencaKm(this.form.kmInicialFilipe, this.form.kmFinalFilipe);
+  }
+
+  /** Km rodado pelos dois; quem não informou conta como zero. */
+  protected get totalKmPrevia(): number {
+    return (this.totalKmVagnerPrevia ?? 0) + (this.totalKmFilipePrevia ?? 0);
   }
 
   protected get liquidoVagnerPrevia(): number {
@@ -136,8 +152,10 @@ export class PlanilhaUber {
       horaFinalVagner: hhmm(r.horaFinalVagner),
       horaInicialFilipe: hhmm(r.horaInicialFilipe),
       horaFinalFilipe: hhmm(r.horaFinalFilipe),
-      kmInicial: r.kmInicial,
-      kmFinal: r.kmFinal,
+      kmInicialVagner: r.kmInicialVagner,
+      kmFinalVagner: r.kmFinalVagner,
+      kmInicialFilipe: r.kmInicialFilipe,
+      kmFinalFilipe: r.kmFinalFilipe,
       cargaPostoVagner: r.cargaPostoVagner,
       cargaPostoFilipe: r.cargaPostoFilipe,
       valorVagner: r.valorVagner,
@@ -193,13 +211,16 @@ export class PlanilhaUber {
       this.erro.set('Preencha a data (dd/mm/aaaa).');
       return null;
     }
-    if ((f.kmInicial ?? 0) < 0 || (f.kmFinal ?? 0) < 0) {
+    const kms = [f.kmInicialVagner, f.kmFinalVagner, f.kmInicialFilipe, f.kmFinalFilipe];
+    if (kms.some((km) => (km ?? 0) < 0)) {
       this.erro.set('Km não pode ser negativo.');
       return null;
     }
-    // Km é opcional; só confere a ordem quando os dois foram informados.
-    if (f.kmInicial !== null && f.kmFinal !== null && f.kmFinal < f.kmInicial) {
-      this.erro.set('Km final não pode ser menor que o Km inicial.');
+    // Km é opcional; só confere a ordem quando o inicial e o final da pessoa foram informados.
+    const vagnerInvertido = (diferencaKm(f.kmInicialVagner, f.kmFinalVagner) ?? 0) < 0;
+    const filipeInvertido = (diferencaKm(f.kmInicialFilipe, f.kmFinalFilipe) ?? 0) < 0;
+    if (vagnerInvertido || filipeInvertido) {
+      this.erro.set(`Km final ${vagnerInvertido ? 'do Vagner' : 'do Filipe'} não pode ser menor que o Km inicial.`);
       return null;
     }
     if (!!f.horaInicialVagner !== !!f.horaFinalVagner || !!f.horaInicialFilipe !== !!f.horaFinalFilipe) {
@@ -218,8 +239,10 @@ export class PlanilhaUber {
       horaFinalVagner: f.horaFinalVagner || null,
       horaInicialFilipe: f.horaInicialFilipe || null,
       horaFinalFilipe: f.horaFinalFilipe || null,
-      kmInicial: f.kmInicial,
-      kmFinal: f.kmFinal,
+      kmInicialVagner: f.kmInicialVagner,
+      kmFinalVagner: f.kmFinalVagner,
+      kmInicialFilipe: f.kmInicialFilipe,
+      kmFinalFilipe: f.kmFinalFilipe,
       cargaPostoVagner: valores[0],
       cargaPostoFilipe: valores[1],
       valorVagner: valores[2],
