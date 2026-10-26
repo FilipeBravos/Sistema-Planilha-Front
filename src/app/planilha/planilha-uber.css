@@ -46,13 +46,16 @@ dd {
 }
 
 .tabela-wrap {
-  overflow-x: auto; /* só aparece em telas estreitas */
+  /* Rolagem própria: só as linhas se movem; cabeçalho e linha de entrada ficam fixos. */
+  overflow: auto;
+  max-height: max(320px, calc(100vh - 400px));
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
 }
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
   min-width: 1300px;
   table-layout: fixed;
@@ -147,4 +150,24 @@ button.primario {
 }
 button.perigo {
   color: #b91c1c;
+}
+
+/* Cabeçalho fixo no topo e linha de entrada fixa embaixo: só as linhas de dados rolam. */
+thead,
+tfoot {
+  position: sticky;
+  z-index: 2;
+}
+thead {
+  top: 0;
+}
+tfoot {
+  bottom: 0;
+}
+thead th {
+  box-shadow: inset 0 -1px 0 #e5e7eb;
+}
+tfoot .entrada td {
+  border-top: 0;
+  box-shadow: inset 0 2px 0 #86efac;
 }
