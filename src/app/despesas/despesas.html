@@ -12,7 +12,7 @@
     </button>
   }
 </nav>
-<p class="dica">Os totais são o que vence no período: no cartão, cada parcela entra no mês do seu vencimento.</p>
+<p class="dica">Os totais são o que vence no período: no cartão e no boleto parcelados, cada parcela entra no mês do seu vencimento.</p>
 
 <section class="formulario" [class.editando]="editandoId() !== null">
   <h2>{{ editandoId() === null ? 'Nova despesa' : 'Editando despesa' }}</h2>
@@ -47,14 +47,14 @@
         }
       </select>
     </label>
-    @if (ehCartao) {
+    @if (ehParcelavel) {
       <label class="curto">
         <span>Parcelas</span>
         <input type="number" min="1" max="60" step="1" name="parcelas" placeholder="Nº" [(ngModel)]="form.parcelas" />
       </label>
     }
     <label>
-      <span>{{ ehCartao ? 'Valor total' : 'Valor' }}</span>
+      <span>{{ ehParcelavel ? 'Valor total' : 'Valor' }}</span>
       <app-campo-valor nome="valor" rotulo="Valor" [(ngModel)]="form.valor" />
     </label>
     <div class="botoes">
