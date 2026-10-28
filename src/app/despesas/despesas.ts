@@ -84,14 +84,15 @@ export class Despesas {
     return this.itensDe(this.form.categoria || this.categoriaAtual());
   }
 
-  protected get ehCartao(): boolean {
-    return this.form.formaPagamento === 'CARTAO';
+  /** Cartão e boleto podem ser divididos em parcelas (uma por mês). */
+  protected get ehParcelavel(): boolean {
+    return this.form.formaPagamento === 'CARTAO' || this.form.formaPagamento === 'BOLETO';
   }
 
-  /** Resumo das parcelas do cartão, mostrado enquanto o formulário é preenchido. */
+  /** Resumo das parcelas (cartão ou boleto), mostrado enquanto o formulário é preenchido. */
   protected get previaParcelas(): string {
     const { data, valor, parcelas } = this.form;
-    if (!this.ehCartao || !data || !valor || valor <= 0 || !parcelas || parcelas < 1 || parcelas > 60) {
+    if (!this.ehParcelavel || !data || !valor || valor <= 0 || !parcelas || parcelas < 1 || parcelas > 60) {
       return '';
     }
     const lista = calcularParcelas(data, valor, Math.floor(parcelas));
@@ -106,7 +107,7 @@ export class Despesas {
   }
 
   protected mudouForma(): void {
-    if (this.ehCartao) {
+    if (this.ehParcelavel) {
       this.form.parcelas ??= 1;
     } else {
       this.form.parcelas = null;
@@ -141,7 +142,8 @@ export class Despesas {
       data: v.dataCompra,
       valor: v.valorTotal,
       formaPagamento: v.formaPagamento,
-      parcelas: v.parcelas,
+      // boleto lançado antes de existir parcelamento vem sem parcelas: edita como 1 parcela
+      parcelas: v.parcelas ?? (v.formaPagamento === 'CARTAO' || v.formaPagamento === 'BOLETO' ? 1 : null),
     };
   }
 
@@ -209,8 +211,9 @@ export class Despesas {
       this.erro.set('Informe um valor maior que zero.');
       return null;
     }
-    if (f.formaPagamento === 'CARTAO' && (!f.parcelas || f.parcelas < 1 || f.parcelas > 60)) {
-      this.erro.set('Informe em quantas parcelas o cartão foi dividido (1 a 60).');
+    const parcelavel = f.formaPagamento === 'CARTAO' || f.formaPagamento === 'BOLETO';
+    if (parcelavel && (!f.parcelas || f.parcelas < 1 || f.parcelas > 60)) {
+      this.erro.set('Informe em quantas parcelas o cartão ou boleto foi dividido (1 a 60).');
       return null;
     }
     this.erro.set('');
@@ -220,7 +223,7 @@ export class Despesas {
       data: f.data,
       valor: f.valor,
       formaPagamento: f.formaPagamento,
-      parcelas: f.formaPagamento === 'CARTAO' ? f.parcelas : null,
+      parcelas: parcelavel ? f.parcelas : null,
     };
   }
 

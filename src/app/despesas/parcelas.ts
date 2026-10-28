@@ -16,7 +16,7 @@ export function somarMeses(iso: string, meses: number): string {
 }
 
 /**
- * Parcelas de uma compra no cartão, igual ao cálculo do backend: a 1ª vence na data da compra, as demais
+ * Parcelas de uma compra no cartão ou boleto, igual ao cálculo do backend: a 1ª vence na data da compra, as demais
  * nos meses seguintes; a última parcela absorve o arredondamento.
  */
 export function calcularParcelas(data: string, valor: number, parcelas: number): ParcelaPrevia[] {
