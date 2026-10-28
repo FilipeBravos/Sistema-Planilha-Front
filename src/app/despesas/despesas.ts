@@ -89,19 +89,35 @@ export class Despesas {
     return this.form.formaPagamento === 'CARTAO' || this.form.formaPagamento === 'BOLETO';
   }
 
-  /** Resumo das parcelas (cartão ou boleto), mostrado enquanto o formulário é preenchido. */
+  protected get ehCartao(): boolean {
+    return this.form.formaPagamento === 'CARTAO';
+  }
+
+  protected get ehBoleto(): boolean {
+    return this.form.formaPagamento === 'BOLETO';
+  }
+
+  /**
+   * Resumo das parcelas (cartão ou boleto), mostrado enquanto o formulário é preenchido.
+   * Cartão: o valor digitado é o total, dividido entre as parcelas. Boleto: é o valor de cada parcela (fixo).
+   */
   protected get previaParcelas(): string {
     const { data, valor, parcelas } = this.form;
     if (!this.ehParcelavel || !data || !valor || valor <= 0 || !parcelas || parcelas < 1 || parcelas > 60) {
       return '';
     }
-    const lista = calcularParcelas(data, valor, Math.floor(parcelas));
-    const brl = (n: number) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const n = Math.floor(parcelas);
+    const total = this.ehBoleto ? Math.round(valor * n * 100) / 100 : valor;
+    const lista = calcularParcelas(data, total, n);
+    const brl = (x: number) => x.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     const primeira = lista[0];
     const ultima = lista[lista.length - 1];
     let texto = `${lista.length}x de ${brl(primeira.valor)}`;
     if (ultima.valor !== primeira.valor) {
       texto += ` (a última de ${brl(ultima.valor)})`;
+    }
+    if (this.ehBoleto) {
+      texto += ` (total ${brl(total)})`;
     }
     return `${texto} — vencem de ${formatarData(primeira.vencimento)} a ${formatarData(ultima.vencimento)}`;
   }
@@ -140,7 +156,8 @@ export class Despesas {
       categoria: v.categoria,
       nome: v.nome,
       data: v.dataCompra,
-      valor: v.valorTotal,
+      // no boleto o campo é o valor de cada parcela; nas demais formas, o total
+      valor: v.formaPagamento === 'BOLETO' ? v.valor : v.valorTotal,
       formaPagamento: v.formaPagamento,
       // boleto lançado antes de existir parcelamento vem sem parcelas: edita como 1 parcela
       parcelas: v.parcelas ?? (v.formaPagamento === 'CARTAO' || v.formaPagamento === 'BOLETO' ? 1 : null),

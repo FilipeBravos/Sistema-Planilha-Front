@@ -54,7 +54,7 @@
       </label>
     }
     <label>
-      <span>{{ ehParcelavel ? 'Valor total' : 'Valor' }}</span>
+      <span>{{ ehBoleto ? 'Valor de cada parcela' : ehCartao ? 'Valor total' : 'Valor' }}</span>
       <app-campo-valor nome="valor" rotulo="Valor" [(ngModel)]="form.valor" />
     </label>
     <div class="botoes">
