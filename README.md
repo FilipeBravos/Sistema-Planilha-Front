@@ -33,8 +33,8 @@ O `Dockerfile` compila o Angular e serve os arquivos com o Caddy (HTTPS automát
 
 ## Aba Despesas
 - Categorias: Carro, Energia elétrica, Moto, Plano de saúde, Farmácia, Despesas Lord e Amora, Despesas Filipe, Despesas Vagner, Despesas Romilda e Internet e Telefone. Cada botão mostra o total da categoria no período; "Todas" mostra o total geral.
-- Formulário "Nova despesa" no topo: data da compra, categoria, nome, forma de pagamento (Dinheiro, Cartão, Cheque ou Boleto), valor e, no cartão, o número de parcelas. Enquanto você preenche um cartão aparece a prévia (ex.: "3x de R$ 666,67 — vencem de 25/10/2026 a 25/12/2026").
-- **Vencimentos por mês:** a tabela e os totais mostram o que **vence** no período. Fora do cartão há um vencimento (na data da compra); no cartão, uma parcela por mês (a 1ª na data da compra), com "Parcela 2/3" e a compra de origem. A última parcela absorve o arredondamento.
+- Formulário "Nova despesa" no topo: data da compra, categoria, nome, forma de pagamento (Dinheiro, Cartão, Cheque ou Boleto), valor e, no cartão e no boleto, o número de parcelas. No cartão o valor é o total (dividido entre as parcelas); no boleto é o valor de cada parcela (fixo, ex.: 6 × R$ 580,00). Enquanto você preenche um cartão aparece a prévia (ex.: "3x de R$ 666,67 — vencem de 25/10/2026 a 25/12/2026").
+- **Vencimentos por mês:** a tabela e os totais mostram o que **vence** no período. Fora do cartão e do boleto parcelado há um vencimento (na data da compra); no cartão, uma parcela por mês (a 1ª na data da compra), com "Parcela 2/3" e a compra de origem. A última parcela absorve o arredondamento.
 - ✎ edita e ✕ remove a **compra inteira** (todas as parcelas), a partir de qualquer linha dela.
 - O nome aceita texto livre; ao digitar aparecem as sugestões da categoria (lista em `src/app/despesas/despesas-catalogo.ts`).
 - Usa o mesmo filtro de período (semana/mês/tudo) da aba Uber.
