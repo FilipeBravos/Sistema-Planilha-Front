@@ -97,7 +97,16 @@ export const FORMAS_PAGAMENTO: { id: FormaPagamento; rotulo: string }[] = [
   { id: 'CARTAO', rotulo: 'Cartão' },
   { id: 'CHEQUE', rotulo: 'Cheque' },
   { id: 'BOLETO', rotulo: 'Boleto' },
+  { id: 'CARTAO_VERONICA', rotulo: 'Cartão Verônica' },
 ];
+
+/** Formas de pagamento que ganham um cartão com o total gasto no período (aparece quando há lançamentos). */
+export const FORMAS_COM_CARTAO: FormaPagamento[] = ['CARTAO_VERONICA'];
+
+/** Cartões e boleto podem ser divididos em parcelas (uma por mês). */
+export function parcelavel(forma: FormaPagamento): boolean {
+  return forma === 'CARTAO' || forma === 'BOLETO' || forma === 'CARTAO_VERONICA';
+}
 
 export function rotuloCategoria(id: CategoriaDespesa): string {
   return CATEGORIAS.find((c) => c.id === id)?.rotulo ?? id;

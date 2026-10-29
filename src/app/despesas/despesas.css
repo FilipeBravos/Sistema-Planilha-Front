@@ -35,6 +35,39 @@
   color: #fff;
 }
 
+.cartoes-forma {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.cartao-forma {
+  min-width: 220px;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 8px;
+  border-left: 4px solid #7c3aed;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
+.cartao-forma h2 {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+.cartao-forma .valor {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.cartao-forma .sub {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
 .dica {
   margin: -8px 0 16px;
   font-size: 0.8rem;
