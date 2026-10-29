@@ -12,7 +12,7 @@ import { FiltroPeriodo } from '../filtro-periodo/filtro-periodo';
 import { Periodo, formatarData } from '../format';
 import { CategoriaDespesa, DespesaRequest, DespesaResumo, FormaPagamento, Vencimento } from '../models';
 import { calcularParcelas } from './parcelas';
-import { CATEGORIAS, FORMAS_PAGAMENTO, rotuloCategoria, rotuloForma } from './despesas-catalogo';
+import { CATEGORIAS, FORMAS_COM_CARTAO, FORMAS_PAGAMENTO, parcelavel, rotuloCategoria, rotuloForma } from './despesas-catalogo';
 
 interface FormularioDespesa {
   categoria: CategoriaDespesa | '';
@@ -63,6 +63,15 @@ export class Despesas {
     this.atualizacao.pedido$.pipe(takeUntilDestroyed()).subscribe(() => this.carregar(true));
   }
 
+  /** Cartões de forma de pagamento (ex.: Cartão Verônica) com lançamentos no período. */
+  protected readonly cartoesDeForma = computed(() =>
+    FORMAS_COM_CARTAO.map((forma) => ({
+      forma,
+      rotulo: rotuloForma(forma),
+      ...(this.resumo()?.porFormaPagamento.find((f) => f.formaPagamento === forma) ?? { total: 0, quantidade: 0 }),
+    })).filter((c) => c.quantidade > 0),
+  );
+
   protected totalDe(categoria: CategoriaDespesa): number {
     return this.resumo()?.porCategoria.find((c) => c.categoria === categoria)?.total ?? 0;
   }
@@ -86,11 +95,12 @@ export class Despesas {
 
   /** Cartão e boleto podem ser divididos em parcelas (uma por mês). */
   protected get ehParcelavel(): boolean {
-    return this.form.formaPagamento === 'CARTAO' || this.form.formaPagamento === 'BOLETO';
+    return parcelavel(this.form.formaPagamento);
   }
 
+  /** Cartões (inclui o Cartão Verônica): o valor digitado é o total, dividido entre as parcelas. */
   protected get ehCartao(): boolean {
-    return this.form.formaPagamento === 'CARTAO';
+    return this.form.formaPagamento === 'CARTAO' || this.form.formaPagamento === 'CARTAO_VERONICA';
   }
 
   protected get ehBoleto(): boolean {
@@ -160,7 +170,7 @@ export class Despesas {
       valor: v.formaPagamento === 'BOLETO' ? v.valor : v.valorTotal,
       formaPagamento: v.formaPagamento,
       // boleto lançado antes de existir parcelamento vem sem parcelas: edita como 1 parcela
-      parcelas: v.parcelas ?? (v.formaPagamento === 'CARTAO' || v.formaPagamento === 'BOLETO' ? 1 : null),
+      parcelas: v.parcelas ?? (parcelavel(v.formaPagamento) ? 1 : null),
     };
   }
 
@@ -228,8 +238,8 @@ export class Despesas {
       this.erro.set('Informe um valor maior que zero.');
       return null;
     }
-    const parcelavel = f.formaPagamento === 'CARTAO' || f.formaPagamento === 'BOLETO';
-    if (parcelavel && (!f.parcelas || f.parcelas < 1 || f.parcelas > 60)) {
+    const comParcelas = parcelavel(f.formaPagamento);
+    if (comParcelas && (!f.parcelas || f.parcelas < 1 || f.parcelas > 60)) {
       this.erro.set('Informe em quantas parcelas o cartão ou boleto foi dividido (1 a 60).');
       return null;
     }
@@ -240,7 +250,7 @@ export class Despesas {
       data: f.data,
       valor: f.valor,
       formaPagamento: f.formaPagamento,
-      parcelas: parcelavel ? f.parcelas : null,
+      parcelas: comParcelas ? f.parcelas : null,
     };
   }
 

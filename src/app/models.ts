@@ -59,7 +59,7 @@ export type CategoriaDespesa =
   | 'ROMILDA'
   | 'INTERNET_E_TELEFONE';
 
-export type FormaPagamento = 'DINHEIRO' | 'CARTAO' | 'CHEQUE' | 'BOLETO';
+export type FormaPagamento = 'DINHEIRO' | 'CARTAO' | 'CHEQUE' | 'BOLETO' | 'CARTAO_VERONICA';
 
 export interface DespesaRequest {
   categoria: CategoriaDespesa;
@@ -78,6 +78,8 @@ export interface Despesa extends DespesaRequest {
 export interface DespesaResumo {
   total: number;
   porCategoria: { categoria: CategoriaDespesa; total: number }[];
+  /** Total e quantidade de vencimentos do período em cada forma de pagamento. */
+  porFormaPagamento: { formaPagamento: FormaPagamento; total: number; quantidade: number }[];
 }
 
 /** Um pagamento a vencer (despesa fora do cartão = 1 vencimento; no cartão = 1 por parcela). */

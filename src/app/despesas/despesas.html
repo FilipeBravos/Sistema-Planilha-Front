@@ -12,6 +12,17 @@
     </button>
   }
 </nav>
+@if (cartoesDeForma().length > 0) {
+  <section class="cartoes-forma" aria-label="Gasto por forma de pagamento">
+    @for (c of cartoesDeForma(); track c.forma) {
+      <div class="cartao-forma">
+        <h2>{{ c.rotulo }}</h2>
+        <p class="valor">{{ c.total | currency: 'BRL' }}</p>
+        <p class="sub">gasto no período · {{ c.quantidade }} {{ c.quantidade === 1 ? 'lançamento' : 'lançamentos' }}</p>
+      </div>
+    }
+  </section>
+}
 <p class="dica">Os totais são o que vence no período: no cartão e no boleto parcelados, cada parcela entra no mês do seu vencimento.</p>
 
 <section class="formulario" [class.editando]="editandoId() !== null">
