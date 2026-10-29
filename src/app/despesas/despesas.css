@@ -146,14 +146,32 @@
   margin: 10px 0 0;
 }
 
+/*
+ * Tudo acima da tabela (período, categorias, cards, formulário) fica fixo: a aba ocupa a altura da tela e só a
+ * tabela rola, com o cabeçalho preso no topo. 145px = cabeçalho do app (abas) + respiros do <main>.
+ * Em telas muito baixas, a página rola normalmente (altura mínima).
+ */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 145px);
+  min-height: 560px;
+}
+:host > *:not(.tabela-wrap) {
+  flex-shrink: 0;
+}
 .tabela-wrap {
-  overflow-x: auto;
+  flex: 1 1 auto;
+  min-height: 160px;
+  overflow: auto;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
 }
 table {
-  border-collapse: collapse;
+  /* separate (e não collapse) para o cabeçalho fixo cobrir por completo as linhas que rolam por baixo */
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
   min-width: 900px;
   font-size: 0.85rem;
@@ -169,6 +187,11 @@ th {
   background: #f9fafb;
   font-weight: 600;
   font-size: 0.75rem;
+}
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 .c-data { width: 130px; }
 .c-categoria { width: 170px; }
